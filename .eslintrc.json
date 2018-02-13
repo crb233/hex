@@ -1,0 +1,19 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 6
+    },
+    "rules": {
+        "semi": ["error", "always"],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["warn", "double"],
+        "indent": ["warn", 4],
+        "key-spacing": ["warn"],
+        "no-unused-vars": ["warn"],
+        "no-console": ["off"]
+    }
+}
