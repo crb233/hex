@@ -36,7 +36,8 @@ patterns will be specified with ellipsis `...`.
 ```javascript
 {
     "id": ID,
-    "player_number": INT,
+    "name": STRING,
+    "number": INT,
     "game_id": ID,
     "last_request": INT,
     "new_messages": [MESSAGE_OBJECT, MESSAGE_OBJECT...]
@@ -50,10 +51,17 @@ patterns will be specified with ellipsis `...`.
     "active": BOOL,
     "public": BOOL,
     "turn": INT,
+    "players": INT,
     "player_ids": [ID, ID...],
     "player_names": [STRING, STRING...],
     "player_colors": [COLOR, COLOR...],
-    "board": BOARD_OBJECT
+    "board_id": ID,
+    "board_name": STRING,
+    "board": [
+        [INT, INT...],
+        [INT, INT...],
+        ...
+    ]
 }
 ```
 
@@ -119,6 +127,7 @@ patterns will be specified with ellipsis `...`.
 ```javascript
 {
     "player_name": STRING,
+    "player_color": COLOR,
     "game_id": ID
 }
 ```

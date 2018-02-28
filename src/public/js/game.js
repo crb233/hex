@@ -1,15 +1,14 @@
 
+const root3 = Math.sqrt(3);
+
 // Size of hex tile margin relative to width of tile
 const margin = 1 / 5;
 
-const svg_height = 112;
-const svg_width = 97;
-
 // Hex tile scaling factors
-const hex_w = Math.sqrt(3);
+const hex_w = root3;
 const hex_h = 2;
 const hex_margin_w = margin;
-const hex_margin_h = (Math.sqrt(3) * margin - 1) / 2;
+const hex_margin_h = (root3 * margin - 1) / 2;
 
 // Hex tile colors
 const hex_colors = ["none", "red", "yellow", "green", "cyan", "blue", "purple"]

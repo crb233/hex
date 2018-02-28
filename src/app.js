@@ -269,8 +269,8 @@ Trim sensitive data from a board object to be returned to a user
 */
 function trimBoardObject(obj) {
     return {
-        id: obj.board_id,
-        board_name: obj.board_name,
+        id: obj.id,
+        name: obj.name,
         players: obj.players,
         board: obj.board
     };
@@ -281,13 +281,16 @@ Trim sensitive data from a game object to be returned to a user
 */
 function trimGameObject(obj) {
     return {
-        id: obj.game_id,
+        id: obj.id,
         active: obj.active,
         public: obj.public,
         turn: obj.turn,
+        players: obj.players,
         // player_ids: obj.player_ids,
         player_names: obj.player_names,
         player_colors: obj.player_colors,
+        board_id: obj.board_id,
+        board_name: obj.board_name,
         board: obj.board
     };
 }
@@ -297,8 +300,9 @@ Trim sensitive data from a player object to be returned to a user
 */
 function trimPlayerObject(obj) {
     return {
-        id: obj.player_id,
-        player_number: obj.player_number,
+        id: obj.id,
+        name: obj.name,
+        number: obj.number,
         game_id: obj.game_id,
         last_request: obj.last_request,
         new_messages: obj.messages
@@ -309,8 +313,7 @@ function trimPlayerObject(obj) {
 Returns a list of all boards
 */
 function listBoards(data, callback) {
-    let boards = db
-        .get("boards")
+    let boards = db.get("boards")
         .map(trimBoardObject)
         .value();
     
@@ -321,8 +324,7 @@ function listBoards(data, callback) {
 Returns a list of all public inactive games
 */
 function listGames(data, callback) {
-    let games = db
-        .get("games")
+    let games = db.get("games")
         .filter("public")
         .reject("active")
         .map(trimGameObject)
@@ -332,14 +334,13 @@ function listGames(data, callback) {
 }
 
 /*
-Creates a new game, adding the game to the database and returning the initial
-state to the caller.
+Creates a new player and a new game, returning both to the caller.
 
 All of the following parameters are required to be in data:
     - public (Boolean)
     - board_id (String)
     - player_name (String)
-    - player_color (String)
+    - player_color (Color)
 */
 function newGame(data, callback) {
     if (!data.public || !isBoolean(data.public)) {
@@ -350,8 +351,8 @@ function newGame(data, callback) {
         return callback("Parameter 'board_id' must be a string");
     }
     
-    if (!data.player_name || !isName(data.board_id)) {
-        return callback("Parameter 'player_name' must be a valid name");
+    if (!data.player_name || !isString(data.player_name)) {
+        return callback("Parameter 'player_name' must be a string");
     }
     
     if (!data.player_color || !isColor(data.player_color)) {
@@ -372,21 +373,25 @@ function newGame(data, callback) {
     
     let player = {
         id: player_id,
-        player_number: 0,
+        name: data.player_name
+        number: 0,
         game_id: game_id,
         last_request: 0,
         new_messages: []
     };
     
     let game = {
-        turn: 0,
-        active: false,
         id: game_id,
+        active: false,
         public: data.public,
+        turn: 0,
+        players: board_obj.players,
         player_ids: [player_id],
         player_names: [data.player_name],
         player_colors: [data.player_color],
-        board: board_obj
+        board_id: board_obj.id,
+        board_name: board_obj.name,
+        board: board_obj.board
     };
     
     // Store the player and game objects
@@ -400,10 +405,76 @@ function newGame(data, callback) {
 }
 
 /*
+Creates a new player and adds them to a game, returning both to the caller.
 
+All of the following parameters are required to be in data:
+    - game_id (String)
+    - player_name (String)
+    - player_color (Color)
 */
 function joinGame(data, callback) {
+    if (!data.game_id || !isString(data.game_id)) {
+        return callback("Parameter 'game_id' must be a string");
+    }
     
+    if (!data.player_name || !isString(data.player_name)) {
+        return callback("Parameter 'player_name' must be a string");
+    }
+    
+    if (!data.player_color || !isColor(data.player_color)) {
+        return callback("Parameter 'player_color' must be a valid color");
+    }
+    
+    // Check that there exists a game with the given game id
+    if (!hasID("games", data.game_id)) {
+        return callback("Invalid game ID '" + data.game_id + "'");
+    }
+    
+    // Load the game object
+    let game = getByID("games", data.game_id);
+    
+    // Check that the game isn't active
+    if (game.active) {
+        return callback("Unable to join - game has already started")
+    }
+    
+    // Generate a unique player ID
+    let player_id = uniqueID("players");
+    
+    let player = {
+        id: player_id,
+        name: data.player_name,
+        number: game.players,
+        game_id: game.id,
+        last_request: 0,
+        new_messages: []
+    };
+    
+    // Update the game object (automatically updates the database's copy)
+    game.player_ids.push(player_id);
+    game.player_names.push(data.player_name);
+    game.player_colors.push(data.player_color);
+    if (game.player_ids.length == game.players) {
+        game.active = true;
+    }
+    
+    let msgs = {
+        type: "join",
+        text: "Player " + player.name + " has joined the game"
+    };
+    
+    db.get("players")
+        .filter((p) => p.game_id == game.id)
+        .forEach((p) => p.new_messages.push(msg))
+        .write()
+    
+    // Store the player object
+    db.get("players").push(player).write();
+    
+    callback(false, {
+        player: trimPlayerObject(player),
+        game: trimGameObject(game),
+    });
 }
 
 /*
