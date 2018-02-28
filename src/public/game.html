@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+
+<script type="text/javascript" src="jquery.min.js"> </script>
+<script type="text/javascript" src="game.js"> </script>
+<link rel="stylesheet" type="text/css" href="game.css"> </link>
+
+<head>
+    <title> Hex Game </title>
+</head>
+
+<body>
+    <div id="topbar">
+        <input id="hex_size" class="slider" type="range" min="10" max="70" value="30">
+    </div>
+    
+    <div id="sidebar"> </div>
+    
+    <div id="content">
+        <div class="board">
+            <!-- <div class="hex-row">
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div> -->
+            
+            <div class="hex-row">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row even">
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row even">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row even">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+            
+            <div class="hex-row">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-none.svg"/>
+                <img class="hex" src="img/hex-blue-base.svg"/>
+            </div>
+            
+            <div class="hex-row even">
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-red-base.svg"/>
+                <img class="hex" src="img/hex-hidden.svg"/>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

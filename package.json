@@ -1,27 +1,24 @@
 {
-    "name": "checkers",
+    "name": "hex",
     "version": "0.0.1",
-    "description": "A simple checkers program for the CS 451 final project",
+    "description": "A webapp implementation of the game of Hex",
     "scripts": {
-        "start": "node src/server/app.js",
+        "start": "node src/app.js",
         "test": "nyc --reporter=html mocha --recursive",
         "lint": "./node_modules/.bin/eslint",
-        "lint-all": "./node_modules/.bin/eslint src/ test/",
-        "make-doc": "jsdoc -c .jsdoc.json -r src/"
+        "lint-all": "./node_modules/.bin/eslint src/ test/"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/crb233/checkers"
+        "url": "https://github.com/crb233/hex"
     },
     "dependencies": {
         "async": "^2.5.0",
         "body-parser": "^1.17.2",
-        "docdash": "^0.4.0",
         "eslint": "^4.3.0",
         "express": "^4.15.4",
-        "jsdoc": "^3.5.4",
+        "lowdb": "^1.0.0",
         "mocha": "^3.5.0",
-        "mongodb": "^2.2.31",
         "nyc": "^11.1.0"
     },
     "private": true

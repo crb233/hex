@@ -1,0 +1,143 @@
+
+:root {
+    /* Hex Tile Size */
+    --hex-w: 97px;
+    --hex-h: 112px;
+    --hex-margin-w: 11.2px;
+    --hex-margin-h: -18.3px;
+}
+
+
+
+/* Page Layout */
+
+#topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    
+    width: calc(70% - 4em);
+    min-width: 4em;
+    height: calc(10% - 4em);
+    min-height: 1em;
+    
+    padding-top: 2em;
+    padding-bottom: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
+    
+    background-color: #EEE;
+}
+
+#sidebar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    
+    width: calc(30% - 4em);
+    min-width: 6em;
+    
+    padding: 2em;
+    background-color: #DDD;
+}
+
+#content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    
+    width: 70%;
+    min-width: 2em;
+    height: 90%;
+    min-height: 2em;
+    
+    overflow: auto;
+    white-space: nowrap;
+}
+
+
+
+/* Board Scale Slider */
+
+.slider {
+    position: absolute;
+    margin: auto;
+    width: calc(100% - 5em);
+    height: 1em;
+    
+    -webkit-appearance: none;
+    
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4C50AF;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4C50AF;
+    cursor: pointer;
+}
+
+
+
+/* Hex Board */
+
+.board {
+    user-select: none;
+    -moz-user-select: none;
+    
+    padding-top: 3em;
+    padding-bottom: 3em;
+    padding-left: 2em;
+    padding-right: 2em;
+    display: block;
+    white-space: nowrap;
+}
+
+.hex-row {
+    font-size: 0;
+    clear: left;
+}
+
+.hex-row.even {
+    margin-left: calc(0.5 * (var(--hex-w) + var(--hex-margin-w)));
+}
+
+
+
+/* Hex Tiles */
+
+img.hex {
+    width: var(--hex-w);
+    height: var(--hex-h);
+    margin-bottom: var(--hex-margin-h);
+    margin-right: var(--hex-margin-w);
+    display: inline-block;
+}
+
+img.hex:hover {
+    opacity: 0.7;
+}
