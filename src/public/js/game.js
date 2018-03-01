@@ -1,31 +1,9 @@
 
-const root3 = Math.sqrt(3);
-
-// Size of hex tile margin relative to width of tile
-const margin = 1 / 5;
-
-// Hex tile scaling factors
-const hex_w = root3;
-const hex_h = 2;
-const hex_margin_w = margin;
-const hex_margin_h = (root3 * margin - 1) / 2;
-
 // Hex tile colors
 const hex_colors = ["none", "red", "yellow", "green", "cyan", "blue", "purple"]
 
 // Slider element for scaling hex tiles
 var slider;
-
-function set_css_var(name, val) {
-    document.documentElement.style.setProperty(name, val);
-}
-
-function set_hex_scale(scale) {
-    set_css_var("--hex-w", (hex_w * scale) + "px");
-    set_css_var("--hex-h", (hex_h * scale) + "px");
-    set_css_var("--hex-margin-w", (hex_margin_w * scale) + "px");
-    set_css_var("--hex-margin-h", (hex_margin_h * scale) + "px");
-}
 
 function hex_img_name(color) {
     return "img/hex-" + color + ".svg";

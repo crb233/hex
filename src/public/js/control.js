@@ -10,14 +10,8 @@ const update_loop_delay = 1000;
 // Local Storage Functions //
 //=========================//
 
-const key_set = "__key_set__";
-
 function save_data(key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
-    
-    let keys = load_data(key_set);
-    keys.push(key);
-    save_data(key_set, keys);
 }
 
 function load_data(key) {
@@ -27,15 +21,6 @@ function load_data(key) {
 function delete_data(key) {
     localStorage.removeItem(key);
 }
-
-function clear_data() {
-    let keys = load(key_set);
-    for (let i = 0; i < keys.length; i++) {
-        delete_data(keys[i]);
-    }
-}
-
-save(key_set, []);
 
 
 
@@ -56,7 +41,7 @@ const hex_margin_w = margin;
 const hex_margin_h = (root3 * margin - 1) / 2;
 
 function hex_click(func) {
-    $(".hex").not(".hidden").click(hex_click);
+    $(".hex").not(".hidden").click(func);
 }
 
 function hex_img(color, base) {

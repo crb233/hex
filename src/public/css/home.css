@@ -1,0 +1,89 @@
+
+html, body {
+    overflow: hidden;
+}
+
+
+
+/* Left and Right Bars */
+
+#leftbar, #rightbar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 25%;
+    z-index: 10;
+    background-color: #ffffff;
+}
+
+#leftbar {
+    left: 0;
+}
+
+#rightbar {
+    right: 0;
+}
+
+#leftbar .board {
+    right: 0;
+}
+
+#rightbar .board {
+    left: 0;
+}
+
+.board {
+    position: absolute;
+    top: -76px;
+    z-index: 20;
+}
+
+
+
+/* Page Content */
+
+#content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.menu {
+    width: 100%;
+    height: 100%;
+}
+
+#title {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 128px;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #4444aa;
+}
+
+button {
+    display: block;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 1em;
+    padding-right: 1em;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 2em;
+    color: #ffffff;
+    background-color: #4444aa;
+}
+
+button:hover {
+    background-color: #5555cc;
+}

@@ -1,0 +1,38 @@
+
+/* Hexagon Styling */
+
+:root {
+    --hex-w: 97px;
+    --hex-h: 112px;
+    --hex-margin-w: 11.2px;
+    --hex-margin-h: -18.3px;
+}
+
+.board {
+    user-select: none;
+    -moz-user-select: none;
+    
+    padding-top: 3em;
+    padding-bottom: 3em;
+    padding-left: 2em;
+    padding-right: 2em;
+    display: block;
+    white-space: nowrap;
+}
+
+.hex-row {
+    font-size: 0;
+    clear: left;
+}
+
+.hex-row.even {
+    margin-left: calc(0.5 * (var(--hex-w) + var(--hex-margin-w)));
+}
+
+img.hex {
+    width: var(--hex-w);
+    height: var(--hex-h);
+    margin-bottom: var(--hex-margin-h);
+    margin-right: var(--hex-margin-w);
+    display: inline-block;
+}
