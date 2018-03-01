@@ -7,6 +7,20 @@ people to play remotely through the internet. It is currently being hosted on
 
 
 
+## Future Additions
+
+- Instant messaging: Include a sidebar for messaging other players in your
+current game.
+
+- Game history: View a list of all completed games (with statistics and a
+playback slider) as well as a list of uncompleted games to be continued. All
+data can be kept in local storage.
+
+- Game board creator: Page for creating custom game boards which can be
+uploaded to the server and used by other players.
+
+
+
 ## Getting Started
 
 To clone and set up this repository:
