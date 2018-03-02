@@ -118,25 +118,43 @@
     <div id="content">
         <div class="menu" id="main-menu">
             <h1> HEX </h1>
-            <button id="new-game-button"> New Game </button>
-            <button id="join-game-button"> Join Game </button>
-            <button id="help-button"> Help </button>
+            <button class="new-game-button"> New Game </button>
+            <button class="join-game-button"> Join Game </button>
+            <button class="help-button"> Help </button>
         </div>
         
-        <div class="menu" id="new-game-menu">
-            <h2> New Game </h2>
-        </div>
-        
-        <div class="menu" id="join-game-menu">
-            <h2> Join Game </h2>
-        </div>
-        
-        <div class="menu" id="help-menu">
-            <h2> Help </h2>
-        </div>
+        <div class="menu" id="sub-menu"></div>
     </div>
     
 </body>
+
+<div class="menu" id="new-game-menu">
+    <h2> New Game </h2>
+    <!-- <form id="new-game-form">
+        <br>
+        <label> Username: </label>
+        <input type="text" class="form-field" id="new-game-username" placeholder="Username" maxlength="20" required>
+        
+        <br>
+        <label> Mode: </label>
+        <input type="radio" name="mode" class="form-field"class="form-field" value="0" checked="checked" required> Public
+        <input type="radio" name="mode" class="form-field" value="1" required> Private
+        
+        <br>
+        <button class="button button5" onclick="hostGame(); return false;" value="Submit">Start Game</button>
+    </form> -->
+    <button class="back-button"> Back </button>
+</div>
+
+<div class="menu" id="join-game-menu">
+    <h2> Join Game </h2>
+    <button class="back-button"> Back </button>
+</div>
+
+<div class="menu" id="help-menu">
+    <h2> Help </h2>
+    <button class="back-button"> Back </button>
+</div>
 
 </html>
 
