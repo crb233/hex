@@ -35,7 +35,6 @@ html, body {
 .board {
     position: absolute;
     top: -76px;
-    z-index: 20;
 }
 
 
@@ -57,13 +56,24 @@ html, body {
     height: 100%;
 }
 
-#title {
-    margin-top: 32px;
+h1 {
+    margin: 0;
+    padding-top: 32px;
     text-align: center;
     font-size: 128px;
     font-family: sans-serif;
     font-weight: bold;
-    color: #4444aa;
+    color: #884488;
+}
+
+h2 {
+    margin: 0;
+    padding-top: 32px;
+    text-align: center;
+    font-size: 64px;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #884488;
 }
 
 button {
@@ -81,9 +91,9 @@ button {
     text-align: center;
     font-size: 2em;
     color: #ffffff;
-    background-color: #4444aa;
+    background-color: #884488;
 }
 
 button:hover {
-    background-color: #5555cc;
+    background-color: #bb33bb;
 }

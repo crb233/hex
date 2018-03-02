@@ -1,9 +1,9 @@
 {
     "name": "hex",
     "version": "0.0.1",
-    "description": "A webapp implementation of the game of Hex",
+    "description": "A web implementation of the game of Hex",
     "scripts": {
-        "start": "node src/app.js",
+        "start": "node out/app.js",
         "test": "nyc --reporter=html mocha --recursive",
         "lint": "./node_modules/.bin/eslint",
         "lint-all": "./node_modules/.bin/eslint src/ test/"

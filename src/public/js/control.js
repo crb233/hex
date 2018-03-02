@@ -134,21 +134,15 @@ function startUpdateLoop() {
             
             //1st player wins
             if (winner === player.player_number) {
-              alert (game.player_names[winner] + ", you collected 12 pieces. WINNER!");
+                alert (game.player_names[winner] + ", you collected 12 pieces. WINNER!");
             } else if (winner !== -1) {
-              alert ("You lose! " + game.player_names[winner] + " collected 12 pieces.");
+                alert ("You lose! " + game.player_names[winner] + " collected 12 pieces.");
             }
             
             // if it was your opponent's turn
             if (game.turn !== player.player_number) {
                 game = msg.game;
                 resetBoard();
-                
-                // if it's now your turn
-                if (game.turn === player.player_number) {
-                    playSound(NOTIFICATION);
-                    startTimer(game.timer);
-                }
             }
             
             game = msg.game;

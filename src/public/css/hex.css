@@ -18,6 +18,9 @@
     padding-right: 2em;
     display: block;
     white-space: nowrap;
+    
+    margin-top: var(--hex-margin-h);
+    margin-left: var(--hex-margin-w);
 }
 
 .hex-row {

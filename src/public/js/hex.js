@@ -43,39 +43,37 @@ function to_hexagonal(pos) {
     return [pos[0], pos[1] + shift]
 }
 
-class Board {
-    
-    constructor(positions) {
-        this.positions = positions;
-        this.tiles = {};
-        
-        // store positions of different types of tiles
-        for (let pos in positions) {
-            this.tiles[positions[pos]] = pos;
-        }
-    }
-    
-    get(pos) {
-        return this.positions[pos];
-    }
-    
-    set(pos, val) {
-        this.positions[pos] = val;
-    }
-    
-    get_neighbors(pos) {
-        let list = [];
-        for (let dir of DIRECTIONS) {
-            let p = add_pos(pos, dir);
-            if (p in this.positions) {
-                list.push(p);
-            }
-        }
-        return list;
-    }
-    
-    has_connection(home, piece) {
-        
-    }
+function find_pieces(board) {
+    // TODO
 }
 
+function find_bases(pieces) {
+    // TODO
+}
+
+function find_bridge(board, player) {
+    // TODO
+}
+
+function load_board(board) {
+    let pieces = find_pieces(board);
+    let bases = find_bases(pieces);
+    return {
+        pieces: pieces,
+        bases: bases
+    };
+}
+
+function list_neighbors(board, pos) {
+    let nrows = board.length;
+    let ncols = board[0].length;
+    let list = [];
+    for (let dir of DIRECTIONS) {
+        let r = pos[0] + dir[0];
+        let c = pos[1] + dir[1];
+        if (0 <= r && r < nrows && 0 <= c && c < ncols) {
+            list.push([r, c]);
+        }
+    }
+    return list;
+}
