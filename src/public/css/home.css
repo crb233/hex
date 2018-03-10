@@ -1,10 +1,13 @@
 
-html, body {
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 200;
+}
+
+body {
     overflow: hidden;
     background-color: white;
 }
-
-
 
 /* Left and Right Bars */
 
@@ -13,7 +16,8 @@ html, body {
     top: 0;
     bottom: 0;
     width: 25%;
-    background-color: white;
+    max-width: 400px;
+    /*background-color: 0;*/
 }
 
 #leftbar {
@@ -43,13 +47,15 @@ html, body {
 
 #content {
     position: absolute;
+    z-index: 1;
     top: 0;
     bottom: 0;
     left: 25%;
     right: 25%;
-    background-color: white;
+    min-width: 400px;
     overflow-x: hidden;
     overflow-y: hidden;
+    background-color: white;
 }
 
 .menu {
@@ -59,29 +65,28 @@ html, body {
 
 h1 {
     margin: 0;
-    padding-top: 32px;
+    padding-top: 24px;
+    padding-bottom: 24px;
     text-align: center;
     font-size: 128px;
-    font-family: sans-serif;
-    font-weight: bold;
     color: #884488;
 }
 
 h2 {
     margin: 0;
-    padding-top: 32px;
+    padding-top: 24px;
+    padding-bottom: 24px;
     text-align: center;
     font-size: 64px;
-    font-family: sans-serif;
-    font-weight: bold;
     color: #884488;
 }
 
-button {
+button,
+.button {
     display: block;
-    margin-top: 1em;
     margin-left: auto;
     margin-right: auto;
+    width: 80%;
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 1em;
@@ -91,17 +96,25 @@ button {
     cursor: pointer;
     text-align: center;
     font-size: 28px;
-    font-weight: bold;
     color: white;
     background-color: #884488;
+    transition: 0.1s all linear;
 }
 
-button:hover {
+button:hover,
+.button:hover {
     background-color: #bb33bb;
 }
 
-button:active {
+button:active,
+.button:active {
     background-color: #aa44aa;
+}
+
+button:focus,
+.button:focus {
+    outline: 0;
+    box-shadow: 0 0 0 3px black;
 }
 
 
@@ -110,20 +123,79 @@ button:active {
 /* Input Forms */
 
 form {
-    /*max-width: 450px;*/
-    width: 70%;
-    padding: 30px;
-    margin: 2em;
-    margin-left: auto;
-    margin-right: auto;
-    border-radius: 10px;
-    box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.35);
-    background: #fafafa;
+    margin-top: 24px;
+    margin-left: 0px;
+    margin-right: 0px;
     font-size: 20px;
 }
 
-form label {
-    font-weight: bold;
+div.input-field {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+input {
+    outline: 0;
+}
+
+label {
+    margin-right: 32px;
+    cursor: pointer;
+}
+
+input[type=text] {
+    width: calc(99% - 32px - 4px);
+    border-radius: 12px;
+    border: 2px solid #884488;
+    margin: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 18px;
+}
+
+input[type=radio] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    
+    border: 2px solid #884488;
+    transition: 0.2s all linear;
+    
+    position: relative;
+    top: 2px;
+}
+
+input[type=radio]:checked {
+  border: 8px solid #884488;
+}
+
+input[type=radio]:hover {
+    cursor: pointer;
+}
+
+input[type=radio]:active {
+    
+}
+
+input[type=radio]:focus {
+    
+}
+
+input[type=button],
+input[type=submit] {
+    display: inline;
+    width: 49%;
+}
+
+form label button {
+    display: inline-block;
+    width: 40%;
 }
 
 form ul {

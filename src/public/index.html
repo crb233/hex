@@ -1,14 +1,13 @@
 <!DOCTYPE HTML>
 <html>
 
-<link rel="stylesheet" type="text/css" href="css/hex.css"> </link>
-<link rel="stylesheet" type="text/css" href="css/home.css"> </link>
-
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"> </script>
-<script type="text/javascript" src="js/control.js"> </script>
-<script type="text/javascript" src="js/home.js"> </script>
+<!-- TODO
+    - Generate left and right hex boards dynamically
+    - Navigate menus buttons with arrow keys
+-->
 
 <head>
+    <!-- Title and Metadata -->
     <title> Hex Game </title>
     <meta name="author" content="Curtis Bechtel">
     
@@ -20,9 +19,22 @@
     <link rel="mask-icon" href="ico/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <meta name="theme-color" content="#ffffff">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400" rel="stylesheet">
+    
+    <!-- Style Sheets -->
+    <link rel="stylesheet" type="text/css" href="css/hex.css"> </link>
+    <link rel="stylesheet" type="text/css" href="css/home.css"> </link>
+    
+    <!-- Scripts -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js"> </script>
+    <script type="text/javascript" src="js/basic.js"> </script>
+    <script type="text/javascript" src="js/home.js"> </script>
 </head>
 
 <body>
+    
     <div id="leftbar">
         <div class="board">
             <div class="hex-row">
@@ -116,45 +128,60 @@
     </div>
     
     <div id="content">
-        <div class="menu" id="main-menu">
-            <h1> HEX </h1>
-            <button class="new-game-button"> New Game </button>
-            <button class="join-game-button"> Join Game </button>
-            <button class="help-button"> Help </button>
+        <div class="menu" id="menu1">
+            <div class="menu" id="main-menu">
+                <h1> HEX </h1>
+
+                <div class="input-field">
+                    <button class="new-game-button"> New Game </button>
+                </div>
+                
+                <div class="input-field">
+                    <button class="join-game-button"> Join Game </button>
+                </div>
+                
+                <div class="input-field">
+                    <button class="help-button"> Help </button>
+                </div>
+            </div>
         </div>
         
-        <div class="menu" id="sub-menu"></div>
+        <div class="menu" id="menu2">
+            <div class="menu" id="new-game-menu">
+                <h2> New Game </h2>
+                <form id="new-game-form">
+                    <div class="input-field">
+                        <input id="new-game-username" type="text" placeholder="Username" maxlength="24" required>
+                    </div>
+                    
+                    <div class="input-field">
+                        <span style="margin-right: 20px;"> Visibility : </span> 
+                        <input id="select-public" type="radio" name="mode" value="public" checked="checked" required>
+                        <label for="select-public"> Public </label>
+                        <input id="select-private" type="radio" name="mode" value="private" required>
+                        <label for="select-private"> Private </label>
+                    </div>
+                    
+                    <div class="input-field">
+                        <input class="button back-button" type="button" value="Cancel">
+                        <input class="button" type="submit" value="Start">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="menu" id="join-game-menu">
+                <h2> Join Game </h2>
+                <button class="back-button"> Back </button>
+            </div>
+            
+            <div class="menu" id="help-menu">
+                <h2> Help </h2>
+                <button class="back-button"> Back </button>
+            </div>
+        </div>
     </div>
     
 </body>
-
-<div class="menu" id="new-game-menu">
-    <h2> New Game </h2>
-    <!-- <form id="new-game-form">
-        <br>
-        <label> Username: </label>
-        <input type="text" class="form-field" id="new-game-username" placeholder="Username" maxlength="20" required>
-        
-        <br>
-        <label> Mode: </label>
-        <input type="radio" name="mode" class="form-field"class="form-field" value="0" checked="checked" required> Public
-        <input type="radio" name="mode" class="form-field" value="1" required> Private
-        
-        <br>
-        <button class="button button5" onclick="hostGame(); return false;" value="Submit">Start Game</button>
-    </form> -->
-    <button class="back-button"> Back </button>
-</div>
-
-<div class="menu" id="join-game-menu">
-    <h2> Join Game </h2>
-    <button class="back-button"> Back </button>
-</div>
-
-<div class="menu" id="help-menu">
-    <h2> Help </h2>
-    <button class="back-button"> Back </button>
-</div>
 
 </html>
 

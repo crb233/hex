@@ -6,20 +6,36 @@ const update_loop_delay = 1000;
 
 
 
-//=========================//
-// Local Storage Functions //
-//=========================//
+//========================//
+// Data Storage Functions //
+//========================//
 
-function save_data(key, obj) {
+// Local (browser) data
+
+function save_local(key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
 }
 
-function load_data(key) {
+function load_local(key) {
     return JSON.parse(localStorage.getItem(key));
 }
 
-function delete_data(key) {
+function delete_local(key) {
     localStorage.removeItem(key);
+}
+
+// Temporary (session) data
+
+function save_temp(key, obj) {
+    sessionStorage.setItem(key, JSON.stringify(obj));
+}
+
+function load_temp(key) {
+    return JSON.parse(sessionStorage.getItem(key));
+}
+
+function delete_temp(key) {
+    sessionStorage.removeItem(key);
 }
 
 
