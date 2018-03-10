@@ -1,79 +1,96 @@
 
-const HEX_HIDDEN = -1;
-const HEX_BLANK  = 0;
-const HEX_PIECE1 = 1;
-const HEX_PIECE2 = 2;
-const HEX_PIECE3 = 3;
-const HEX_HOME1  = 4;
-const HEX_HOME2  = 5;
-const HEX_HOME3  = 6;
+const NO_PLAYER = 0;
+const PLAYER_1  = 1;
+const PLAYER_2  = 2;
+const PLAYER_3  = 3;
+const PLAYER_4  = 4;
 
-const DIRECTIONS = [
-        [-1, -1], [-1,  0],
-    [ 0, -1],         [ 0,  1],
-        [ 1,  0], [ 1,  1]
-]
+const HIDDEN_PIECE = 0;
+const BLANK_PIECE  = 10;
+const NORMAL_PIECE = 20;
+const BASE_PIECE   = 30;
 
 /*
-
 Rows go horizontally increasing rightward
-Columns go diagonally left increasing downward
+Columns count up from the leftmost tile
 The first row always extends further left than the second
 
-         c0  c1  c2  c3
-    r0 |   |   |   |   |
-    r1 ##|   |   |   |##
-    r2 |   |   |   |   |
-    r3 ##|   |   |   |##
-    r4 |   |   |   |   |
-
+For example:
+    |0,0|0,1|0,2|0,3|
+      |1,0|1,1|1,2|
+    |2,0|2,1|2,2|2,3|
+      |3,0|3,1|3,2|
+    |4,0|4,1|4,2|4,3|
 */
 
-function add_pos(p1, p2) {
-    return [p1[0] + p2[0], p1[1] + p2[1]];
-}
-
-function to_rectangular(pos) {
-    let shift = (pos[0] + pos[0] % 2) / 2;
-    return [pos[0], pos[1] - shift]
-}
-
-function to_hexagonal(pos) {
-    let shift = (pos[0] + pos[0] % 2) / 2;
-    return [pos[0], pos[1] + shift]
-}
-
-function find_pieces(board) {
-    // TODO
-}
-
-function find_bases(pieces) {
-    // TODO
-}
-
-function find_bridge(board, player) {
-    // TODO
-}
-
-function load_board(board) {
-    let pieces = find_pieces(board);
-    let bases = find_bases(pieces);
-    return {
-        pieces: pieces,
-        bases: bases
-    };
-}
-
-function list_neighbors(board, pos) {
-    let nrows = board.length;
-    let ncols = board[0].length;
-    let list = [];
-    for (let dir of DIRECTIONS) {
-        let r = pos[0] + dir[0];
-        let c = pos[1] + dir[1];
-        if (0 <= r && r < nrows && 0 <= c && c < ncols) {
-            list.push([r, c]);
-        }
+/*
+Returns a list of all valid neighboring positions on the given board
+*/
+function listNeighbors(board, pos) {
+    let r = pos[0];
+    let c = pos[1];
+    
+    var list;
+    if (r % 2 == 0) {
+        list = [
+            [r - 1, c - 1], [r - 1, c],
+            [r, c - 1],     [r, c + 1],
+            [r + 1, c - 1], [r + 1, c]
+        ];
+    } else {
+        list = [
+            [r - 1, c], [r - 1, c + 1],
+            [r, c - 1], [r, c + 1],
+            [r + 1, c], [r + 1, c + 1]
+        ];
     }
-    return list;
+    
+    return list.filter((p) => isValidPos(board, p));
+}
+
+/*
+Gets the player number of a piece
+*/
+function getPiecePlayer(piece) {
+    return piece % 10;
+}
+
+/*
+Gets the type of a piece
+*/
+function getPieceType(piece) {
+    return (piece - piece % 10) / 10;
+}
+
+/*
+Determines whether a position exists on a game board
+*/
+function isValidPos(board, pos) {
+    return pos[0] >= 0
+            && pos[0] < board.length
+            && pos[1] >= 0
+            && pos[1] < board[pos[0]].length;
+}
+
+/*
+Determines whether a move is valid given the current state of the board
+*/
+function isValidMove(board, move) {
+    return isValidPos(board, move)
+            && getPieceType(board[move[0]][move[1]]) === BLANK_PIECE;
+}
+
+/*
+Modifies a board to reflect a move being made by the given player. This method
+assumes that the move has already been checked for validity.
+*/
+function applyMove(board, move, player) {
+    board[move[0]][move[1]] = NORMAL_PIECE + player;
+}
+
+/*
+Returns the player number of board's winner or 0 if there's no winner yet
+*/
+function getWinner(board) {
+    // TODO
 }
