@@ -6,9 +6,8 @@ const PLAYER_3  = 3;
 const PLAYER_4  = 4;
 
 const HIDDEN_PIECE = 0;
-const BLANK_PIECE  = 10;
-const NORMAL_PIECE = 20;
-const BASE_PIECE   = 30;
+const NORMAL_PIECE = 10;
+const BASE_PIECE   = 20;
 
 /*
 Rows go horizontally increasing rightward
@@ -30,7 +29,7 @@ function listNeighbors(board, pos) {
     let r = pos[0];
     let c = pos[1];
     
-    var list;
+    let list;
     if (r % 2 == 0) {
         list = [
             [r - 1, c - 1], [r - 1, c],
@@ -76,8 +75,10 @@ function isValidPos(board, pos) {
 Determines whether a move is valid given the current state of the board
 */
 function isValidMove(board, move) {
+    let p = board[move[0]][move[1]];
     return isValidPos(board, move)
-            && getPieceType(board[move[0]][move[1]]) === BLANK_PIECE;
+            && getPieceType(p) === NORMAL_PIECE
+            && getPiecePlayer(p) === NO_PLAYER;
 }
 
 /*

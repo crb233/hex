@@ -47,7 +47,7 @@ const public_dir = path(__dirname, "public");
 /*
 The local database file
 */
-const db_file = path(__dirname, "db.json");
+const db_file = path(__dirname, "../db.json");
 
 
 
@@ -76,7 +76,7 @@ const app = express();
 app.use(express.static(public_dir));
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({
-    extended: true
+    "extended": true
 }));
 
 
@@ -93,17 +93,13 @@ response containing an error code and an object
 */
 function createErrorCheckCallback(res) {
     return function(err, result) {
-        if (typeof err === "string") {
-            res.status(500);
-            res.send({
-                "error": err
-            });
+        if (isString(err)) {
+            res.status(400);
+            res.send(err);
             
         } else if (err || typeof result === "undefined" || result === null) {
             res.status(500);
-            res.send({
-                "error": "Unknown server error"
-            });
+            res.send("Unknown server error");
             
         } else {
             res.status(200);
@@ -269,10 +265,10 @@ Trim sensitive data from a board object to be returned to a user
 */
 function trimBoardObject(obj) {
     return {
-        id: obj.id,
-        name: obj.name,
-        players: obj.players,
-        board: obj.board
+        "id": obj.id,
+        "name": obj.name,
+        "players": obj.players,
+        "board": obj.board
     };
 }
 
@@ -281,17 +277,17 @@ Trim sensitive data from a game object to be returned to a user
 */
 function trimGameObject(obj) {
     return {
-        id: obj.id,
-        active: obj.active,
-        public: obj.public,
-        turn: obj.turn,
-        players: obj.players,
-        // player_ids: obj.player_ids,
-        player_names: obj.player_names,
-        player_colors: obj.player_colors,
-        board_id: obj.board_id,
-        board_name: obj.board_name,
-        board: obj.board
+        "id": obj.id,
+        "active": obj.active,
+        "public": obj.public,
+        "turn": obj.turn,
+        "players": obj.players,
+        // "player_ids": obj.player_ids,
+        "player_names": obj.player_names,
+        "player_colors": obj.player_colors,
+        "board_id": obj.board_id,
+        "board_name": obj.board_name,
+        "board": obj.board
     };
 }
 
@@ -300,12 +296,12 @@ Trim sensitive data from a player object to be returned to a user
 */
 function trimPlayerObject(obj) {
     return {
-        id: obj.id,
-        name: obj.name,
-        number: obj.number,
-        game_id: obj.game_id,
-        last_request: obj.last_request,
-        new_messages: obj.messages
+        "id": obj.id,
+        "name": obj.name,
+        "number": obj.number,
+        "game_id": obj.game_id,
+        "last_request": obj.last_request,
+        "new_messages": obj.messages
     };
 }
 
@@ -343,6 +339,7 @@ All of the following parameters are required to be in data:
     - player_color (Color)
 */
 function newGame(data, callback) {
+    // Validate input data
     if (!data.public || !isBoolean(data.public)) {
         return callback("Parameter 'public' must be a boolean");
     }
@@ -372,26 +369,26 @@ function newGame(data, callback) {
     let game_id = uniqueID("games");
     
     let player = {
-        id: player_id,
-        name: data.player_name
-        number: 0,
-        game_id: game_id,
-        last_request: 0,
-        new_messages: []
+        "id": player_id,
+        "name": data.player_name,
+        "number": 0,
+        "game_id": game_id,
+        "last_request": 0,
+        "new_messages": []
     };
     
     let game = {
-        id: game_id,
-        active: false,
-        public: data.public,
-        turn: 0,
-        players: board_obj.players,
-        player_ids: [player_id],
-        player_names: [data.player_name],
-        player_colors: [data.player_color],
-        board_id: board_obj.id,
-        board_name: board_obj.name,
-        board: board_obj.board
+        "id": game_id,
+        "active": false,
+        "public": data.public,
+        "turn": 0,
+        "players": board_obj.players,
+        "player_ids": [player_id],
+        "player_names": [data.player_name],
+        "player_colors": [data.player_color],
+        "board_id": board_obj.id,
+        "board_name": board_obj.name,
+        "board": board_obj.board
     };
     
     // Store the player and game objects
@@ -399,8 +396,8 @@ function newGame(data, callback) {
     db.get("games").push(game).write();
     
     callback(false, {
-        player: trimPlayerObject(player),
-        game: trimGameObject(game),
+        "player": trimPlayerObject(player),
+        "game": trimGameObject(game),
     });
 }
 
@@ -413,6 +410,7 @@ All of the following parameters are required to be in data:
     - player_color (Color)
 */
 function joinGame(data, callback) {
+    // Validate input data
     if (!data.game_id || !isString(data.game_id)) {
         return callback("Parameter 'game_id' must be a string");
     }
@@ -435,19 +433,19 @@ function joinGame(data, callback) {
     
     // Check that the game isn't active
     if (game.active) {
-        return callback("Unable to join - game has already started")
+        return callback("Unable to join - game has already started");
     }
     
     // Generate a unique player ID
     let player_id = uniqueID("players");
     
     let player = {
-        id: player_id,
-        name: data.player_name,
-        number: game.players,
-        game_id: game.id,
-        last_request: 0,
-        new_messages: []
+        "id": player_id,
+        "name": data.player_name,
+        "number": game.players,
+        "game_id": game.id,
+        "last_request": 0,
+        "new_messages": []
     };
     
     // Update the game object (automatically updates the database's copy)
@@ -459,8 +457,8 @@ function joinGame(data, callback) {
     }
     
     let msgs = {
-        type: "join",
-        text: "Player " + player.name + " has joined the game"
+        "type": "join",
+        "text": "Player " + player.name + " has joined the game"
     };
     
     db.get("players")
@@ -472,16 +470,52 @@ function joinGame(data, callback) {
     db.get("players").push(player).write();
     
     callback(false, {
-        player: trimPlayerObject(player),
-        game: trimGameObject(game),
+        "player": trimPlayerObject(player),
+        "game": trimGameObject(game),
     });
 }
 
 /*
+Checks if a move is valid, then modifies the game state to reflect the move
 
+All of the following parameters are required to be in data:
+    - player_id (String)
+    - move (Move)
 */
 function makeMove(data, callback) {
+    // Validate input data
+    if (!data.player_id || !isString(data.player_id)) {
+        return callback("Parameter 'player_id' must be a string");
+    }
     
+    if (!data.move || !isMove(data.move)) {
+        return callback("Parameter 'move' must be a pair of integers");
+    }
+    
+    // Check that there exists a player with the given ID
+    if (!hasID("players", data.player_id)) {
+        return callback("Invalid player ID '" + data.player_id + "'");
+    }
+    
+    let player = getByID("players", data.player_id);
+    
+    // Check that there exists a game with the player's game ID
+    if (!hasID("games", player.game_id)) {
+        console.error("Internal error: Game with ID '" + player.game_id + "' no longer exists");
+        return callback("Internal error");
+    }
+    
+    let game = getByID("games", player.game_id);
+    
+    // Check that the move is valid
+    if (!isValidMove(game.board, data.move)) {
+        return callback("Invalid move at position " + data.move);
+    }
+    
+    applyMove(game.board, data.move);
+    callback(false, {
+        "game": trimGameObject(game)
+    });
 }
 
 /*

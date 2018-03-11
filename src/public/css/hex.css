@@ -28,7 +28,7 @@
     clear: left;
 }
 
-.hex-row.even {
+.hex-row.odd {
     margin-left: calc(0.5 * (var(--hex-w) + var(--hex-margin-w)));
 }
 

@@ -5,45 +5,90 @@ function scroll(id, then) {
     }, 500, "swing", then);
 }
 
-function showMenu1(id) {
+function showPage1(id) {
     // Hide all menu 1 menus except for the one with id
-    $("#menu1").children().hide();
+    $("#page1").children().hide();
     $(id).show();
     
     // Scroll to menu 1
-    scroll("#menu1", function() {
-        $("#menu2").children().hide();
+    scroll("#page1", function() {
+        $("#page2").children().hide();
     });
 }
 
-function showMenu2(id) {
+function showPage2(id) {
     // Hide all menu 2 menus except for the one with id
-    $("#menu2").children().hide();
+    $("#page2").children().hide();
     $(id).show();
     
     // Scroll to menu 2
-    scroll("#menu2", function() {
-        $("#menu1").children().hide();
+    scroll("#page2", function() {
+        $("#page1").children().hide();
     });
 }
 
+function showError(id, error) {
+    $(id).html("Error: " + error);
+    $(id).show();
+}
+
+function submitNewGame() {
+    let username = $("#new-game-username").val();
+    let mode = $("input[name=mode]:checked").val();
+    
+    // TODO get color and board from user input
+    let obj = {
+        "player_name": username,
+        "player_color": "red",
+        "board_id": "0",
+        "public": mode == "public"
+    };
+    
+    post("/new-game", obj, function(data) {
+        save_temp("player", data.player);
+        save_temp("game", data.game);
+        
+        document.location.href = "/game.html";
+        
+    }, function(xhr, error) {
+        if (xhr.status == 400) {
+            showError("#new-game-error", xhr.response);
+        } else {
+            showError("#new-game-error", "Failed to contact the server");
+        }
+    });
+    
+    return false;
+}
+
 $(document).ready(function() {
-    set_hex_scale(100);
-    showMenu1("#main-menu");
+    setHexScale(100);
+    showPage1("#main-menu");
+    
+    // Navigation buttons
     
     $(".back-button").click(function() {
-        showMenu1("#main-menu");
+        showPage1("#main-menu");
     });
     
     $(".new-game-button").click(function() {
-        showMenu2("#new-game-menu");
+        showPage2("#new-game-menu");
     });
     
     $(".join-game-button").click(function() {
-        showMenu2("#join-game-menu");
+        showPage2("#join-game-menu");
     });
     
     $(".help-button").click(function() {
-        showMenu2("#help-menu");
+        showPage2("#help-menu");
     });
+    
+    // Submit buttons
+    
+    $("#new-game-submit").click(submitNewGame);
+    
+    // Error Message Divs
+    
+    $("div.error").hide();
+    
 });

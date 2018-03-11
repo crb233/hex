@@ -60,43 +60,64 @@ function hex_click(func) {
     $(".hex").not(".hidden").click(func);
 }
 
-function hex_img(color, base) {
-    if (base) {
-        return "img/hex-" + color + "-base.svg";
+function getHexImg(piece, cmap) {
+    let type = getPieceType(piece);
+    let player = getPiecePlayer(piece);
+    
+    if (type == HIDDEN_PIECE) {
+        return "img/hex-hidden.svg";
+        
+    } else if (player == 0) {
+        return "img/hex-none.svg";
+        
+    } else if (player - 1 >= cmap.length) {
+        return "img/hex-none.svg";
+        
+    } else if (type == NORMAL_PIECE) {
+        return "img/hex-" + cmap[player - 1] + ".svg";
+        
     } else {
-        return "img/hex-" + color + ".svg";
+        return "img/hex-" + cmap[player - 1] + "-base.svg";
     }
 }
 
-function set_css_var(name, val) {
+function setCssVar(name, val) {
     document.documentElement.style.setProperty(name, val);
 }
 
-function set_hex_scale(scale) {
-    set_css_var("--hex-w", (hex_w * scale) + "px");
-    set_css_var("--hex-h", (hex_h * scale) + "px");
-    set_css_var("--hex-margin-w", (hex_margin_w * scale) + "px");
-    set_css_var("--hex-margin-h", (hex_margin_h * scale) + "px");
+function setHexScale(scale) {
+    setCssVar("--hex-w", (hex_w * scale) + "px");
+    setCssVar("--hex-h", (hex_h * scale) + "px");
+    setCssVar("--hex-margin-w", (hex_margin_w * scale) + "px");
+    setCssVar("--hex-margin-h", (hex_margin_h * scale) + "px");
 }
 
 /*
 Creates and returns an HTML element representing the given hex board
 */
-function create_board(board, map) {
+function createBoard(board, cmap) {
     let res = []
+    
     res.push('<div class="board">');
     for (let r = 0; r < board.length; r++) {
-        res.push('<div class="hex-row">');
+        
         let row = board[r];
-        for (let c = 0; c < row.length; c++) {
-            let x = map(row[c]);
-            res.push('<img class="hex" data-r="' + r + '" data-c="' + c
-                + '" onclick="click_hex(this)" src="' + hex_img(x.color, x.base) + '"/>');
+        if (r % 2 == 0) {
+            res.push('<div class="hex-row">');
+        } else {
+            res.push('<div class="hex-row odd">');
         }
-        res.push('/<div>');
+        
+        for (let c = 0; c < row.length; c++) {
+            res.push('<img class="hex" data-r="' + r + '" data-c="' + c
+                + '" onclick="click_hex(this)" src="' + getHexImg(row[c], cmap) + '"/>');
+        }
+        
+        res.push('</div>');
     }
-    res.push('/<div>');
-    return res.join('')
+    
+    res.push('</div>');
+    return res.join('');
 }
 
 /*
@@ -143,20 +164,18 @@ function startUpdateLoop() {
         };
 
         post("/get-updates", data, function(msg) {
-            // success
-            
             //check if there are any winners
-            let winner = isGameOver(msg.game);
+            let winner = getWinner(msg.game.board);
             
             //1st player wins
-            if (winner === player.player_number) {
-                alert (game.player_names[winner] + ", you collected 12 pieces. WINNER!");
-            } else if (winner !== -1) {
-                alert ("You lose! " + game.player_names[winner] + " collected 12 pieces.");
+            if (winner === player.number) {
+                alert("Congratulations, " + game.player_names[winner] + ", you win!");
+            } else if (winner !== NO_PLAYER) {
+                alert("Sorry, " + game.player_names[player.number] + ", " + game.player_names[winner] + " won.");
             }
             
             // if it was your opponent's turn
-            if (game.turn !== player.player_number) {
+            if (game.turn !== player.number) {
                 game = msg.game;
                 resetBoard();
             }
@@ -168,8 +187,7 @@ function startUpdateLoop() {
                 receiveMessage(msg.messages[i]);
             }
             
-        }, function(xhr, ajaxOptions, thrownError) {
-            // failure
+        }, function(xhr, error) {
             // document.getElementById("content").innerHTML = "Error Fetching " + URL;
         });
     }, update_loop_delay);
@@ -181,53 +199,39 @@ Receives message objects from the server and acts according to their content
 function receiveMessage(msg) {
     switch (msg.type) {
         case "join":
-            playSound(NOTIFICATION);
-            alert(msg.text);
-            //enable the close button
-            closebtn.classList.remove('disabled');
-            closeNav();
-            startTimer(game.timer);
-            updateTable();
+            // TODO
             break;
 
         case "forfeit":
-            alert(msg.text);
-            document.location.href = "/index.html";
+            // TODO
             break;
 
         case "request_draw":
-            if (confirm(msg.text + ".\nClick Ok to accept or Cancel to keep playing.")) {
-                accept_draw();
-            } else {
-                rejectDraw();
-            }
+            // TODO
             break;
 
         case "accept_draw":
-            alert(msg.text);
-            document.location.href = "/index.html";
+            // TODO
             break;
 
         case "reject_draw":
-            alert(msg.text);
+            // TODO
             break;
 
         case "pause":
-            alert(msg.text);
-            pauseTimer();
+            // TODO
             break;
 
         case "resume":
-            resumeTimer();
+            // TODO
             break;
 
         case "expired":
-            alert(msg.text);
+            // TODO
             break;
 
         default:
-            console.error("Unknown message type");
-            alert("Unknown message type");
+            // TODO
             break;
     }
 }

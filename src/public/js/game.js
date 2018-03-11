@@ -3,7 +3,11 @@
 const hex_colors = ["none", "red", "yellow", "green", "cyan", "blue", "purple"]
 
 // Slider element for scaling hex tiles
-var slider;
+let slider;
+
+// Local player and game objects
+let player;
+let game;
 
 function hex_img_name(color) {
     return "img/hex-" + color + ".svg";
@@ -28,7 +32,7 @@ function hex_init() {
 
 function slider_input() {
     // Set the scale of hex tiles
-    set_hex_scale(parseInt(this.value));
+    setHexScale(parseInt(this.value));
 }
 
 function slider_init() {
@@ -53,4 +57,9 @@ $(document).ready(function() {
     hex_init();
     slider_init();
     $(window).resize(onresize);
+    
+    player = load_temp("player");
+    game = load_temp("game");
+    
+    $("#content").html(createBoard(game.board, game.player_colors));
 });
