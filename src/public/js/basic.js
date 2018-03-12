@@ -71,7 +71,7 @@ function getHexImg(piece, cmap) {
         return "img/hex-none.svg";
         
     } else if (player - 1 >= cmap.length) {
-        return "img/hex-none.svg";
+        return "img/hex-unassigned.svg";
         
     } else if (type == NORMAL_PIECE) {
         return "img/hex-" + cmap[player - 1] + ".svg";
