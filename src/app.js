@@ -59,7 +59,10 @@ const db_file = path(__dirname, "../db.json");
 /*
 Initialize an instance of the local database
 */
-const db = lowdb(new FileSync(db_file));
+const db = lowdb(new FileSync(db_file, {
+  serialize: (data) => JSON.stringify(data),
+  deserialize: (data) => JSON.parse(data)
+}));
 
 db.defaults({
     "boards": [],
@@ -210,14 +213,14 @@ function isColor(obj) {
     return isString(obj) && colors.includes(obj);
 }
 
-/**
+/*
 Determines if a value is a correctly formatted move object
 */
 function isMove(obj) {
     return Array.isArray(obj) && obj.length === 2 && isInteger(obj[0]) && isInteger(obj[1]);
 }
 
-/**
+/*
 Determines if a value is a correctly formatted message object
 */
 function isMessage(obj) {
@@ -309,7 +312,12 @@ function trimPlayerObject(obj) {
 Deletes all data associated with a particular game
 */
 function deleteGame(id) {
-    if (!hasID("games"))
+    if (!hasID("games")) {
+        console.error("Attempted to delete nonexistent game with ID '" + id + "'");
+        return;
+    }
+    
+    // TODO
 }
 
 /*
@@ -399,9 +407,11 @@ function newGame(data, callback) {
     };
     
     // Store the player and game objects
-    db.get("players").push(player).write();
-    db.get("games").push(game).write();
+    db.get("players").push(player);
+    db.get("games").push(game);
     
+    // Save changes and return
+    db.write();
     callback(false, {
         "player": trimPlayerObject(player),
         "game": trimGameObject(game),
@@ -463,19 +473,27 @@ function joinGame(data, callback) {
         game.active = true;
     }
     
-    let msgs = {
+    let msg = {
         "type": "join",
         "text": "Player " + player.name + " has joined the game"
     };
     
-    db.get("players")
-        .filter((p) => p.game_id == game.id)
-        .forEach((p) => p.new_messages.push(msg))
-        .write()
+    // Add the message to each of the opponents' lists
+    for (let id of game.player_ids) {
+        if (id != player.id) {
+            if (hasID("players", id)) {
+                getByID("players", id).new_messages.push(msg);
+            } else {
+                console.error("Player with ID '" + id + "' no longer exists")
+            }
+        }
+    }
     
     // Store the player object
-    db.get("players").push(player).write();
+    db.get("players").push(player);
     
+    // Save changes and return
+    db.write();
     callback(false, {
         "player": trimPlayerObject(player),
         "game": trimGameObject(game),
@@ -508,7 +526,7 @@ function makeMove(data, callback) {
     
     // Check that there exists a game with the player's game ID
     if (!hasID("games", player.game_id)) {
-        console.error("Internal error: Game with ID '" + player.game_id + "' no longer exists");
+        console.error("Game with ID '" + player.game_id + "' no longer exists");
         return callback("Internal error");
     }
     
@@ -521,8 +539,9 @@ function makeMove(data, callback) {
     
     // Apply the move and save the database
     applyMove(game.board, data.move);
-    db.write();
     
+    // Save changes and return
+    db.write();
     callback(false, {
         "game": trimGameObject(game)
     });
@@ -549,7 +568,7 @@ function getUpdates(data, callback) {
     
     // Check that there exists a game with the player's game ID
     if (!hasID("games", player.game_id)) {
-        console.error("Internal error: Game with ID '" + player.game_id + "' no longer exists");
+        console.error("Game with ID '" + player.game_id + "' no longer exists");
         return callback("Internal error");
     }
     
@@ -557,8 +576,9 @@ function getUpdates(data, callback) {
     
     // Clear the player's list of messages and save the database
     player.new_messages = [];
-    db.write();
     
+    // Save changes and return
+    db.write();
     callback(false, {
         "messages": player.new_messages,
         "game": trimGameObject(game)
@@ -571,7 +591,7 @@ message in their inboxes
 
 All of the following parameters are required to be in data:
     - player_id (String)
-    - move (Move)
+    - message (Message)
 */
 function sendMessage(data, callback) {
     // Validate input data
@@ -592,7 +612,7 @@ function sendMessage(data, callback) {
     
     // Check that there exists a game with the player's game ID
     if (!hasID("games", player.game_id)) {
-        console.error("Warning: Game with ID '" + player.game_id + "' no longer exists");
+        console.error("Game with ID '" + player.game_id + "' no longer exists");
         return callback("Internal error");
     }
     
@@ -604,14 +624,13 @@ function sendMessage(data, callback) {
             if (hasID("players", id)) {
                 getByID("players", id).new_messages.push(data.message);
             } else {
-                console.error("Warning: Player with ID '" + id + "' no longer exists")
+                console.error("Player with ID '" + id + "' no longer exists")
             }
         }
     }
     
-    // Save the database
+    // Save changes and return
     db.write();
-    
     callback(false, {});
 }
 
