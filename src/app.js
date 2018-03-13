@@ -306,6 +306,13 @@ function trimPlayerObject(obj) {
 }
 
 /*
+Deletes all data associated with a particular game
+*/
+function deleteGame(id) {
+    if (!hasID("games"))
+}
+
+/*
 Returns a list of all boards
 */
 function listBoards(data, callback) {
@@ -512,24 +519,100 @@ function makeMove(data, callback) {
         return callback("Invalid move at position " + data.move);
     }
     
+    // Apply the move and save the database
     applyMove(game.board, data.move);
+    db.write();
+    
     callback(false, {
         "game": trimGameObject(game)
     });
 }
 
 /*
+Return game and message updates to the player
 
+All of the following parameters are required to be in data:
+    - player_id (String)
 */
 function getUpdates(data, callback) {
+    // Validate input data
+    if (!data.player_id || !isString(data.player_id)) {
+        return callback("Parameter 'player_id' must be a string");
+    }
     
+    // Check that there exists a player with the given ID
+    if (!hasID("players", data.player_id)) {
+        return callback("Invalid player ID '" + data.player_id + "'");
+    }
+    
+    let player = getByID("players", data.player_id);
+    
+    // Check that there exists a game with the player's game ID
+    if (!hasID("games", player.game_id)) {
+        console.error("Internal error: Game with ID '" + player.game_id + "' no longer exists");
+        return callback("Internal error");
+    }
+    
+    let game = getByID("games", player.game_id);
+    
+    // Clear the player's list of messages and save the database
+    player.new_messages = [];
+    db.write();
+    
+    callback(false, {
+        "messages": player.new_messages,
+        "game": trimGameObject(game)
+    });
 }
 
 /*
+Sends a message from one player to all of that player's opponents by storing the
+message in their inboxes
 
+All of the following parameters are required to be in data:
+    - player_id (String)
+    - move (Move)
 */
 function sendMessage(data, callback) {
+    // Validate input data
+    if (!data.player_id || !isString(data.player_id)) {
+        return callback("Parameter 'player_id' must be a string");
+    }
     
+    if (!data.message || !isString(data.message)) {
+        return callback("Parameter 'message' must be a string");
+    }
+    
+    // Check that there exists a player with the given ID
+    if (!hasID("players", data.player_id)) {
+        return callback("Invalid player ID '" + data.player_id + "'");
+    }
+    
+    let player = getByID("players", data.player_id);
+    
+    // Check that there exists a game with the player's game ID
+    if (!hasID("games", player.game_id)) {
+        console.error("Warning: Game with ID '" + player.game_id + "' no longer exists");
+        return callback("Internal error");
+    }
+    
+    let game = getByID("games", player.game_id);
+    
+    // Add the message to each of the opponents' lists
+    for (let id of game.player_ids) {
+        if (id != player.id) {
+            if (hasID("players", id)) {
+                getByID("players", id).new_messages.push(data.message);
+            } else {
+                console.error("Warning: Player with ID '" + id + "' no longer exists")
+            }
+        }
+    }
+    
+    // Save the database
+    db.write();
+    
+    callback(false, {});
 }
 
 
