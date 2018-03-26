@@ -152,6 +152,11 @@ input {
     outline: 0;
 }
 
+span.input-label {
+    margin-right: 20px;
+    font-weight: bold;
+}
+
 label {
     margin-right: 32px;
     cursor: pointer;

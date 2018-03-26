@@ -81,15 +81,22 @@ function getHexImg(piece, cmap) {
     }
 }
 
-function setCssVar(name, val) {
-    document.documentElement.style.setProperty(name, val);
+function setCss(name, val, selector) {
+    if (selector) {
+        $(selector).each(function() {
+            this.style.setProperty(name, val);
+        });
+        
+    } else {
+        document.documentElement.style.setProperty(name, val);
+    }
 }
 
-function setHexScale(scale) {
-    setCssVar("--hex-w", (hex_w * scale) + "px");
-    setCssVar("--hex-h", (hex_h * scale) + "px");
-    setCssVar("--hex-margin-w", (hex_margin_w * scale) + "px");
-    setCssVar("--hex-margin-h", (hex_margin_h * scale) + "px");
+function setHexScale(scale, selector) {
+    setCss("--hex-w", (hex_w * scale) + "px", selector);
+    setCss("--hex-h", (hex_h * scale) + "px", selector);
+    setCss("--hex-margin-w", (hex_margin_w * scale) + "px", selector);
+    setCss("--hex-margin-h", (hex_margin_h * scale) + "px", selector);
 }
 
 /*

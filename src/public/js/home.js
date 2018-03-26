@@ -1,29 +1,24 @@
 
+const pages = [1, 2];
+
 function scroll(id, then) {
     $("#content").animate({
         scrollTop: $(id).offset().top
     }, 500, "swing", then);
 }
 
-function showPage1(id) {
+function showPage(n, id) {
     // Hide all menu 1 menus except for the one with id
-    $("#page1").children().hide();
+    $("#page" + n).children().hide();
     $(id).show();
     
     // Scroll to menu 1
-    scroll("#page1", function() {
-        $("#page2").children().hide();
-    });
-}
-
-function showPage2(id) {
-    // Hide all menu 2 menus except for the one with id
-    $("#page2").children().hide();
-    $(id).show();
-    
-    // Scroll to menu 2
-    scroll("#page2", function() {
-        $("#page1").children().hide();
+    scroll("#page" + n, function() {
+        for (let i of pages) {
+            if (i !== n) {
+                $("#page" + i).children().hide();
+            }
+        }
     });
 }
 
@@ -34,12 +29,13 @@ function showError(id, error) {
 
 function submitNewGame() {
     let username = $("#new-game-username").val();
+    let color = $("input[name=color]:checked").val();
     let mode = $("input[name=mode]:checked").val();
     
-    // TODO get color and board from user input
+    // TODO get board from user input
     let obj = {
         "player_name": username,
-        "player_color": "red",
+        "player_color": color,
         "board_id": "0",
         "public": mode == "public"
     };
@@ -63,24 +59,24 @@ function submitNewGame() {
 
 $(document).ready(function() {
     setHexScale(100);
-    showPage1("#main-menu");
+    showPage(1, "#main-menu");
     
     // Navigation buttons
     
     $(".back-button").click(function() {
-        showPage1("#main-menu");
+        showPage(1, "#main-menu");
     });
     
     $(".new-game-button").click(function() {
-        showPage2("#new-game-menu");
+        showPage(2, "#new-game-menu");
     });
     
     $(".join-game-button").click(function() {
-        showPage2("#join-game-menu");
+        showPage(2, "#join-game-menu");
     });
     
     $(".help-button").click(function() {
-        showPage2("#help-menu");
+        showPage(2, "#help-menu");
     });
     
     // Submit buttons
@@ -90,5 +86,4 @@ $(document).ready(function() {
     // Error Message Divs
     
     $("div.error").hide();
-    
 });
