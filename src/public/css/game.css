@@ -1,7 +1,7 @@
 
 /* Page Layout */
 
-#topbar {
+/*#topbar {
     position: absolute;
     top: 0;
     left: 0;
@@ -17,8 +17,8 @@
     padding-left: 2em;
     padding-right: 2em;
     
-    background-color: #EEE;
-}
+    background-color: #DDD;
+}*/
 
 #sidebar {
     position: absolute;
@@ -31,64 +31,26 @@
     min-width: 6em;
     
     padding: 2em;
-    background-color: #DDD;
+    background-color: #EEE;
 }
 
 #content {
     position: absolute;
+    top: 0;
     bottom: 0;
     left: 0;
     z-index: 0;
     
     width: 70%;
-    min-width: 2em;
-    height: 90%;
-    min-height: 2em;
+    min-width: 1em;
+    min-height: 1em;
     
     overflow: auto;
     white-space: nowrap;
-}
-
-
-
-/* Board Scale Slider */
-
-.slider {
-    position: absolute;
-    margin: auto;
-    width: calc(100% - 5em);
-    height: 1em;
     
-    -webkit-appearance: none;
-    
-    border-radius: 5px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
-
-.slider:hover {
-    opacity: 1;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: #4C50AF;
-    cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    background: #4C50AF;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 

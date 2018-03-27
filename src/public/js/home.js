@@ -57,6 +57,34 @@ function submitNewGame() {
     return false;
 }
 
+function submitJoinGame() {
+    let username = $("#new-game-username").val();
+    let color = $("input[name=color]:checked").val();
+    let game_id = $("#new-game-id").val();
+    
+    let obj = {
+        "player_name": username,
+        "player_color": color,
+        "game_id": "0"
+    };
+    
+    post("/new-game", obj, function(data) {
+        save_temp("player", data.player);
+        save_temp("game", data.game);
+        
+        document.location.href = "/game.html";
+        
+    }, function(xhr, error) {
+        if (xhr.status == 400) {
+            showError("#new-game-error", xhr.response);
+        } else {
+            showError("#new-game-error", "Failed to contact the server");
+        }
+    });
+    
+    return false;
+}
+
 $(document).ready(function() {
     setHexScale(100);
     showPage(1, "#main-menu");
@@ -82,6 +110,7 @@ $(document).ready(function() {
     // Submit buttons
     
     $("#new-game-submit").click(submitNewGame);
+    $("#join-game-submit").click(submitJoinGame);
     
     // Error Message Divs
     

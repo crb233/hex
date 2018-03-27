@@ -247,14 +247,23 @@ function randomID() {
 // Gama Management //
 //=================//
 
+/*
+Checks if the collection contains an object with the specified ID
+*/
 function hasID(coll, id) {
     return db.get(coll).filter({ "id": id }).size().value() != 0;
 }
 
+/*
+Retrieves the object with the specified ID from a collection
+*/
 function getByID(coll, id) {
     return db.get(coll).filter({ "id": id }).value()[0];
 }
 
+/*
+Generates a unique ID which doesn't yet exist in the specified collection
+*/
 function uniqueID(coll) {
     let id = randomID();
     while (hasID(coll, id)) {
@@ -267,45 +276,25 @@ function uniqueID(coll) {
 Trim sensitive data from a board object to be returned to a user
 */
 function trimBoardObject(obj) {
-    return {
-        "id": obj.id,
-        "name": obj.name,
-        "players": obj.players,
-        "board": obj.board
-    };
+    let copy = Object.assign({}, obj);
+    return copy;
 }
 
 /*
 Trim sensitive data from a game object to be returned to a user
 */
 function trimGameObject(obj) {
-    return {
-        "id": obj.id,
-        "active": obj.active,
-        "public": obj.public,
-        "turn": obj.turn,
-        "players": obj.players,
-        // "player_ids": obj.player_ids,
-        "player_names": obj.player_names,
-        "player_colors": obj.player_colors,
-        "board_id": obj.board_id,
-        "board_name": obj.board_name,
-        "board": obj.board
-    };
+    let copy = Object.assign({}, obj);
+    delete copy.player_ids;
+    return copy;
 }
 
 /*
 Trim sensitive data from a player object to be returned to a user
 */
 function trimPlayerObject(obj) {
-    return {
-        "id": obj.id,
-        "name": obj.name,
-        "number": obj.number,
-        "game_id": obj.game_id,
-        "last_request": obj.last_request,
-        "new_messages": obj.messages
-    };
+    let copy = Object.assign({}, obj);
+    return copy;
 }
 
 /*

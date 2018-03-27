@@ -58,7 +58,7 @@ function getPiecePlayer(piece) {
 Gets the type of a piece
 */
 function getPieceType(piece) {
-    return (piece - piece % 10) / 10;
+    return piece - piece % 10;
 }
 
 /*
@@ -93,5 +93,19 @@ function applyMove(board, move, player) {
 Returns the player number of board's winner or 0 if there's no winner yet
 */
 function getWinner(board) {
+    let pieces = {};
+    for (let r = 0; r < board.length; r++) {
+        for (let c = 0; c < board[r].length; c++) {
+            let p = board[r][c];
+            if (p in pieces) {
+                pieces[p].push([r, c])
+            } else {
+                pieces[p] = [[r, c]];
+            }
+        }
+    }
+    
     // TODO
+    
+    return NO_PLAYER;
 }
