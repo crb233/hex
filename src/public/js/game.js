@@ -12,48 +12,62 @@ const update_loop_delay = 1000;
 const min_scale = 10;
 
 // Local player and game objects
-let player = load_temp("player");
-let game = load_temp("game");
+let player = loadTemp("player");
+let game = loadTemp("game");
 
 // Currently selected move
 let move = null;
 let selected = null;
 
-// Check for updates loop
+// Updates loop
 let loop;
 
+/*
+Resizes the board to fit the window
+*/
 function resizeBoard() {
     let content = $("#content");
     let w = content.width();
     let h = content.height();
     
     let rows = game.board.length;
-    let cols = game.board.reduce((m, x, i) => Math.max(m, x.length + i % 2 / 2), 0);
+    let cols = game.board.reduce((m, x, i) => Math.max(m, x.length + i % 2 / 2), 1);
     
     // TODO FIXME
     let hr = (h - 50) / rows / (hex_h + hex_margin_h);
     let wr = (w - 100) / cols / (hex_w + hex_margin_w);
+    let scale = Math.max(Math.min(hr, wr), min_scale);
     
-    setHexScale(Math.max(Math.min(hr, wr), min_scale))
+    setHexScale(scale);
 }
 
+/*
+Generates the players list on the sidebar
+*/
 function makePlayersList() {
-    let elem = $("#players-list");
-    
     if (game.player_names.length != game.player_colors.length) {
-        console.log();
+        console.error("Error: Player names and colors don't match up");
     }
     
+    let text = "";
     let len = Math.min(game.player_names.length, game.player_colors.length);
     for (let i = 0; i < len; i++) {
         // TODO
     }
+    
+    $("#players-list").html(text);
 }
 
+/*
+Generates and displays the board
+*/
 function makeBoard() {
     $("#content").html(createBoard(game.board, game.player_colors));
 }
 
+/*
+Called when the user clicks on a hex tile
+*/
 function clickTile() {
     let r = parseInt($(this).attr("data-r"));
     let c = parseInt($(this).attr("data-c"));
@@ -61,10 +75,7 @@ function clickTile() {
     // If the selection was valid
     if (game.turn === player.number && isValidMove(game.board, [r, c])) {
         // Reset the previously seleccted piece
-        if (selected !== null) {
-            let img = getHexImg(NORMAL_PIECE + NO_PLAYER, game.player_colors);
-            $(selected).attr("src", img)
-        }
+        cancelMove();
         
         // Show the current piece
         let img = getHexImg(NORMAL_PIECE + player.number, game.player_colors);
@@ -75,16 +86,22 @@ function clickTile() {
     }
 }
 
+/*
+Clear the currently selected move. Called when the user clicks "Cancel"
+*/
 function cancelMove() {
     if (selected !== null) {
         let img = getHexImg(NORMAL_PIECE + NO_PLAYER, game.player_colors);
-        $(selected).attr("src", img)
+        $(selected).attr("src", img);
     }
     
     move = null;
     selected = null;
 }
 
+/*
+Submit the currently selected move. Called when the user clicks "Submit"
+*/
 function submitMove() {
     $("#make-move-error").hide();
     
@@ -98,8 +115,8 @@ function submitMove() {
         makeBoard();
         console.log("success!");
         
-    }, function(xhr, error) {
-        if (xhr.status == 400) {
+    }, function(xhr) {
+        if (xhr.status === 400) {
             showError("#make-move-error", xhr.response);
         } else {
             showError("#make-move-error", "Failed to contact the server");
@@ -121,31 +138,14 @@ function startUpdateLoop() {
         };
         
         post("/get-updates", data, function(obj) {
-            // Check if there are any winners
-            let winner = getWinner(obj.game.board);
-            
-            // // First player wins
-            // if (winner === player.number) {
-            //     alert("Congratulations, " + game.player_names[winner] + ", you win!");
-            // } else if (winner !== NO_PLAYER) {
-            //     alert("Sorry, " + game.player_names[player.number] + ", " + game.player_names[winner] + " won.");
-            // }
-            
-            // if it was your opponent's turn
-            if (game.turn !== player.number) {
-                game = obj.game;
-                resetBoard();
-            }
-            
             game = obj.game;
-            updateTable();
             
             for (let msg of obj.messages) {
                 receiveMessage(msg);
             }
             
-        }, function(xhr, error) {
-            if (xhr.status == 400) {
+        }, function(xhr) {
+            if (xhr.status === 400) {
                 showError("#make-move-error", xhr.response);
             } else {
                 showError("#make-move-error", "Failed to contact the server");
@@ -155,17 +155,61 @@ function startUpdateLoop() {
     }, update_loop_delay);
 }
 
+/*
+Receives message objects from the server and acts according to their content
+*/
+function receiveMessage(msg) {
+    switch (msg.type) {
+    case "join":
+        makeBoard();
+        makePlayersList();
+        break;
+        
+    case "forfeit":
+        // TODO
+        break;
+        
+    case "request_draw":
+        // TODO
+        break;
+        
+    case "accept_draw":
+        // TODO
+        break;
+        
+    case "reject_draw":
+        // TODO
+        break;
+        
+    case "pause":
+        // TODO
+        break;
+        
+    case "resume":
+        // TODO
+        break;
+        
+    case "expired":
+        // TODO
+        break;
+        
+    default:
+        // TODO
+        break;
+    }
+}
+
 $(document).ready(function() {
-    makeBoard()
-    makePlayersList();
     resizeBoard();
+    makeBoard();
+    makePlayersList();
+    $("#game-id").html("Game ID: " + game.id);
     
     // Set board to auto-resize
     $(window).resize(resizeBoard);
     
-    // Set hex tile click function
+    // Set tile and button functionality
     $(".hex").not(".hidden").click(clickTile);
-    
     $("#cancel-move").click(cancelMove);
     $("#submit-move").click(submitMove);
     

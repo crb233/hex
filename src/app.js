@@ -4,6 +4,11 @@
 //=========//
 
 /*
+Hex game logic module
+*/
+const hex = require("./public/js/hex");
+
+/*
 The Path module for manipulating file paths
 */
 const path = require("path").join;
@@ -60,8 +65,8 @@ const db_file = path(__dirname, "../db.json");
 Initialize an instance of the local database
 */
 const db = lowdb(new FileSync(db_file, {
-  serialize: (data) => JSON.stringify(data),
-  deserialize: (data) => JSON.parse(data)
+    serialize: (data) => JSON.stringify(data),
+    deserialize: (data) => JSON.parse(data)
 }));
 
 db.defaults({
@@ -171,7 +176,7 @@ app.post("/send-message", function(req, res) {
 /*
 Liist of valid colors names
 */
-const colors = ["red", "yellow", "green", "cyan", "blue", "purple"]
+const colors = ["red", "yellow", "green", "cyan", "blue", "purple"];
 
 /*
 The set of characters from which IDs should be created
@@ -457,7 +462,7 @@ function joinGame(data, callback) {
     game.player_ids.push(player_id);
     game.player_names.push(data.player_name);
     game.player_colors.push(data.player_color);
-    if (game.player_ids.length == game.players) {
+    if (game.player_ids.length === game.players) {
         game.active = true;
     }
     
@@ -472,7 +477,7 @@ function joinGame(data, callback) {
             if (hasID("players", id)) {
                 getByID("players", id).new_messages.push(msg);
             } else {
-                console.error("Player with ID '" + id + "' no longer exists")
+                console.error("Player with ID '" + id + "' no longer exists");
             }
         }
     }
@@ -520,12 +525,12 @@ function makeMove(data, callback) {
     let game = getByID("games", player.game_id);
     
     // Check that the move is valid
-    if (!isValidMove(game.board, data.move)) {
+    if (!hex.isValidMove(game.board, data.move)) {
         return callback("Invalid move at position " + data.move);
     }
     
     // Apply the move and save the database
-    applyMove(game.board, data.move);
+    hex.applyMove(game.board, data.move);
     
     // Save changes and return
     db.write();
@@ -611,7 +616,7 @@ function sendMessage(data, callback) {
             if (hasID("players", id)) {
                 getByID("players", id).new_messages.push(data.message);
             } else {
-                console.error("Player with ID '" + id + "' no longer exists")
+                console.error("Player with ID '" + id + "' no longer exists");
             }
         }
     }

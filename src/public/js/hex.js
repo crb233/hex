@@ -1,17 +1,13 @@
 
 const NO_PLAYER = 0;
-const PLAYER_1  = 1;
-const PLAYER_2  = 2;
-const PLAYER_3  = 3;
-const PLAYER_4  = 4;
-
+const MAX_PLAYERS = 9;
 const HIDDEN_PIECE = 0;
 const NORMAL_PIECE = 10;
 const BASE_PIECE   = 20;
 
 /*
 Rows go horizontally increasing rightward
-Columns count up from the leftmost tile
+Columns count up from the leftmost tile (starting at 0)
 The first row always extends further left than the second
 
 For example:
@@ -30,7 +26,7 @@ function listNeighbors(board, pos) {
     let c = pos[1];
     
     let list;
-    if (r % 2 == 0) {
+    if (r % 2 === 0) {
         list = [
             [r - 1, c - 1], [r - 1, c],
             [r, c - 1],     [r, c + 1],
@@ -98,7 +94,7 @@ function getWinner(board) {
         for (let c = 0; c < board[r].length; c++) {
             let p = board[r][c];
             if (p in pieces) {
-                pieces[p].push([r, c])
+                pieces[p].push([r, c]);
             } else {
                 pieces[p] = [[r, c]];
             }
@@ -109,3 +105,23 @@ function getWinner(board) {
     
     return NO_PLAYER;
 }
+
+
+
+
+
+if (typeof module === "undefined") module = {};
+module.exports = {
+    NO_PLAYER: NO_PLAYER,
+    MAX_PLAYERS: MAX_PLAYERS,
+    HIDDEN_PIECE: HIDDEN_PIECE,
+    NORMAL_PIECE: NORMAL_PIECE,
+    BASE_PIECE: BASE_PIECE,
+    listNeighbors: listNeighbors,
+    getPiecePlayer: getPiecePlayer,
+    getPieceType: getPieceType,
+    isValidPos: isValidPos,
+    isValidMove: isValidMove,
+    applyMove: applyMove,
+    getWinner: getWinner
+};

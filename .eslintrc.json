@@ -10,10 +10,19 @@
     "rules": {
         "semi": ["error", "always"],
         "linebreak-style": ["error", "unix"],
+        "no-var": ["error"],
+        
+        "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
+        "no-unused-expressions": ["warn"],
         "quotes": ["warn", "double"],
         "indent": ["warn", 4],
         "key-spacing": ["warn"],
         "no-unused-vars": ["warn"],
+        "yoda": ["warn", "never"],
+        
         "no-console": ["off"]
+    },
+    "globals": {
+        "$": true
     }
 }

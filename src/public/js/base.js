@@ -5,29 +5,29 @@
 
 // Local (browser) data
 
-function save_local(key, obj) {
+function saveLocal(key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
 }
 
-function load_local(key) {
+function loadLocal(key) {
     return JSON.parse(localStorage.getItem(key));
 }
 
-function delete_local(key) {
+function deleteLocal(key) {
     localStorage.removeItem(key);
 }
 
 // Temporary (session) data
 
-function save_temp(key, obj) {
+function saveTemp(key, obj) {
     sessionStorage.setItem(key, JSON.stringify(obj));
 }
 
-function load_temp(key) {
+function loadTemp(key) {
     return JSON.parse(sessionStorage.getItem(key));
 }
 
-function delete_temp(key) {
+function deleteTemp(key) {
     sessionStorage.removeItem(key);
 }
 
@@ -49,24 +49,20 @@ const hex_h = 2;
 const hex_margin_w = margin;
 const hex_margin_h = (root3 * margin - 1) / 2;
 
-function hex_click(func) {
-    $(".hex").not(".hidden").click(func);
-}
-
 function getHexImg(piece, cmap) {
     let type = getPieceType(piece);
     let player = getPiecePlayer(piece);
     
-    if (type == HIDDEN_PIECE) {
+    if (type === HIDDEN_PIECE) {
         return "img/hex-hidden.svg";
         
-    } else if (player == 0) {
+    } else if (player === 0) {
         return "img/hex-none.svg";
         
     } else if (player - 1 >= cmap.length) {
         return "img/hex-unassigned.svg";
         
-    } else if (type == NORMAL_PIECE) {
+    } else if (type === NORMAL_PIECE) {
         return "img/hex-" + cmap[player - 1] + ".svg";
         
     } else {
@@ -96,28 +92,28 @@ function setHexScale(scale, selector) {
 Creates and returns an HTML element representing the given hex board
 */
 function createBoard(board, cmap) {
-    let res = []
+    let res = [];
     
-    res.push('<div class="board">');
+    res.push("<div class='board'>");
     for (let r = 0; r < board.length; r++) {
         
         let row = board[r];
-        if (r % 2 == 0) {
-            res.push('<div class="hex-row">');
+        if (r % 2 === 0) {
+            res.push("<div class='hex-row'>");
         } else {
-            res.push('<div class="hex-row odd">');
+            res.push("<div class='hex-row odd'>");
         }
         
         for (let c = 0; c < row.length; c++) {
-            res.push('<img class="hex" data-r="' + r + '" data-c="' + c
-                + '" src="' + getHexImg(row[c], cmap) + '"/>');
+            res.push("<img class='hex' data-r='" + r + "' data-c='" + c
+                + "' src='" + getHexImg(row[c], cmap) + "'/>");
         }
         
-        res.push('</div>');
+        res.push("</div>");
     }
     
-    res.push('</div>');
-    return res.join('');
+    res.push("</div>");
+    return res.join("");
 }
 
 
@@ -152,45 +148,27 @@ function post(endpoint, data, success, error) {
     });
 }
 
-/*
-Receives message objects from the server and acts according to their content
-*/
-function receiveMessage(msg) {
-    switch (msg.type) {
-        case "join":
-            // TODO
-            break;
 
-        case "forfeit":
-            // TODO
-            break;
 
-        case "request_draw":
-            // TODO
-            break;
 
-        case "accept_draw":
-            // TODO
-            break;
 
-        case "reject_draw":
-            // TODO
-            break;
-
-        case "pause":
-            // TODO
-            break;
-
-        case "resume":
-            // TODO
-            break;
-
-        case "expired":
-            // TODO
-            break;
-
-        default:
-            // TODO
-            break;
-    }
-}
+if (typeof module === "undefined") module = {};
+module.exports = {
+    saveLocal: saveLocal,
+    loadLocal: loadLocal,
+    deleteLocal: deleteLocal,
+    saveTemp: saveTemp,
+    loadTemp: loadTemp,
+    deleteTemp: deleteTemp,
+    margin: margin,
+    hex_w: hex_w,
+    hex_h: hex_h,
+    hex_margin_w: hex_margin_w,
+    hex_margin_h: hex_margin_h,
+    getHexImg: getHexImg,
+    setCss: setCss,
+    setHexScale: setHexScale,
+    createBoard: createBoard,
+    showError: showError,
+    post: post
+};

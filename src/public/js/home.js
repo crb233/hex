@@ -1,4 +1,13 @@
 
+// import {
+//     saveTemp,
+//     setHexScale,
+//     showError,
+//     post
+// } from "base";
+
+
+
 const pages = [1, 2];
 
 function scroll(id, then) {
@@ -32,17 +41,17 @@ function submitNewGame() {
         "player_name": username,
         "player_color": color,
         "board_id": "0",
-        "public": mode == "public"
+        "public": mode === "public"
     };
     
     post("/new-game", obj, function(data) {
-        save_temp("player", data.player);
-        save_temp("game", data.game);
+        saveTemp("player", data.player);
+        saveTemp("game", data.game);
         
         document.location.href = "/game.html";
         
-    }, function(xhr, error) {
-        if (xhr.status == 400) {
+    }, function(xhr) {
+        if (xhr.status === 400) {
             showError("#new-game-error", xhr.response);
         } else {
             showError("#new-game-error", "Failed to contact the server");
@@ -60,17 +69,17 @@ function submitJoinGame() {
     let obj = {
         "player_name": username,
         "player_color": color,
-        "game_id": "0"
+        "game_id": game_id
     };
     
     post("/new-game", obj, function(data) {
-        save_temp("player", data.player);
-        save_temp("game", data.game);
+        saveTemp("player", data.player);
+        saveTemp("game", data.game);
         
         document.location.href = "/game.html";
         
-    }, function(xhr, error) {
-        if (xhr.status == 400) {
+    }, function(xhr) {
+        if (xhr.status === 400) {
             showError("#new-game-error", xhr.response);
         } else {
             showError("#new-game-error", "Failed to contact the server");
