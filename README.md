@@ -2,27 +2,7 @@
 ### by Curtis Bechtel
 
 A web implementation of the game of Hex. It is currently being hosted on
-[Heroku](https://playhex.herokuapp.com).
-
-
-
-## Future Additions
-
-- Compressed files: Before running the server, minify all JS, CSS, and HTML to
-an output directory.
-
-- Instant messaging: Include a sidebar for messaging other players in your
-current game.
-
-- Game history: View a list of all completed games (with statistics and a
-playback slider) as well as a list of uncompleted games to be continued. All
-data can be kept in local storage.
-
-- Auto continue: If a player closes the window during a game, they will be
-automatically redirected back to that game the next time they visit the site.
-
-- Game board creator: Page for creating custom game boards which can be
-uploaded to the server and used by other players.
+[Heroku](http://playhex.herokuapp.com).
 
 
 
@@ -52,3 +32,23 @@ To deploy this project on Heroku (for contributors only):
 - `$ heroku login`
 - `$ git push heroku master`
 - Navigate to `playhex.herokuapp.com` on a modern web browser
+
+
+
+## Future Additions
+
+- Compressed files: Before running the server, minify all JS, CSS, and HTML to
+an output directory.
+
+- Instant messaging: Include a sidebar for messaging other players in your
+current game.
+
+- Game history: View a list of all completed games (with statistics and a
+playback slider) as well as a list of uncompleted games to be continued. All
+data can be kept in local storage.
+
+- Auto continue: If a player closes the window during a game, they will be
+automatically redirected back to that game the next time they visit the site.
+
+- Game board creator: Page for creating custom game boards which can be
+uploaded to the server and used by other players.
