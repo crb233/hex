@@ -396,11 +396,10 @@ function newGame(data, callback) {
     };
     
     // Store the player and game objects
-    db.get("players").push(player);
-    db.get("games").push(game);
+    db.get("players").push(player).write();
+    db.get("games").push(game).write();
     
     // Save changes and return
-    db.write();
     callback(false, {
         "player": trimPlayerObject(player),
         "game": trimGameObject(game),
@@ -479,10 +478,9 @@ function joinGame(data, callback) {
     }
     
     // Store the player object
-    db.get("players").push(player);
+    db.get("players").push(player).write();
     
     // Save changes and return
-    db.write();
     callback(false, {
         "player": trimPlayerObject(player),
         "game": trimGameObject(game),

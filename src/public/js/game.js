@@ -117,7 +117,7 @@ function startUpdateLoop() {
     loop = setInterval(function(){
         
         let data = {
-            player_id: player.player_id
+            player_id: player.id
         };
         
         post("/get-updates", data, function(obj) {
