@@ -375,7 +375,7 @@ function newGame(data, callback) {
     let player = {
         "id": player_id,
         "name": data.player_name,
-        "number": 0,
+        "number": 1,
         "game_id": game_id,
         "last_request": 0,
         "new_messages": []
@@ -385,7 +385,7 @@ function newGame(data, callback) {
         "id": game_id,
         "active": false,
         "public": data.public,
-        "turn": 0,
+        "turn": 1,
         "players": board_obj.players,
         "player_ids": [player_id],
         "player_names": [data.player_name],

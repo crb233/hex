@@ -22,11 +22,6 @@ function showPage(n, id) {
     });
 }
 
-function showError(id, error) {
-    $(id).html("Error: " + error);
-    $(id).show();
-}
-
 function submitNewGame() {
     let username = $("#new-game-username").val();
     let color = $("input[name=color]:checked").val();
@@ -89,7 +84,7 @@ $(document).ready(function() {
     setHexScale(100);
     showPage(1, "#main-menu");
     
-    // Navigation buttons
+    // Set navigation button functions
     
     $(".back-button").click(function() {
         showPage(1, "#main-menu");
@@ -107,12 +102,10 @@ $(document).ready(function() {
         showPage(2, "#help-menu");
     });
     
-    // Submit buttons
-    
+    // Set submit button functions
     $("#new-game-submit").click(submitNewGame);
     $("#join-game-submit").click(submitJoinGame);
     
-    // Error Message Divs
-    
+    // Hide error message divs
     $("div.error").hide();
 });

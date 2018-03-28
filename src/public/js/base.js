@@ -1,11 +1,4 @@
 
-// The delay between get-update requests in milliseconds
-const update_loop_delay = 1000;
-
-
-
-
-
 //========================//
 // Data Storage Functions //
 //========================//
@@ -117,7 +110,7 @@ function createBoard(board, cmap) {
         
         for (let c = 0; c < row.length; c++) {
             res.push('<img class="hex" data-r="' + r + '" data-c="' + c
-                + '" onclick="click_hex(this)" src="' + getHexImg(row[c], cmap) + '"/>');
+                + '" src="' + getHexImg(row[c], cmap) + '"/>');
         }
         
         res.push('</div>');
@@ -127,13 +120,6 @@ function createBoard(board, cmap) {
     return res.join('');
 }
 
-/*
-Called when a hex tile is clicked
-*/
-function click_hex(elem) {
-    // TODO
-}
-
 
 
 
@@ -141,6 +127,14 @@ function click_hex(elem) {
 //===========================//
 // Game Management Functions //
 //===========================//
+
+/*
+Displays an error message in the element with the given ID
+*/
+function showError(id, error) {
+    $(id).html("Error: " + error);
+    $(id).show();
+}
 
 /*
 Sends a post request containing JSON data to the given endpoint. Calls one of
@@ -156,48 +150,6 @@ function post(endpoint, data, success, error) {
         "success": success,
         "error": error
     });
-}
-
-/*
-Starts an infinite loop of requesting updates from the server in intervals
-determined by the constant UPDATE_LOOP_TIME
-*/
-let loop;
-function startUpdateLoop() {
-    loop = setInterval(function(){
-
-        let data = {
-            player_id: player.player_id
-        };
-
-        post("/get-updates", data, function(msg) {
-            //check if there are any winners
-            let winner = getWinner(msg.game.board);
-            
-            //1st player wins
-            if (winner === player.number) {
-                alert("Congratulations, " + game.player_names[winner] + ", you win!");
-            } else if (winner !== NO_PLAYER) {
-                alert("Sorry, " + game.player_names[player.number] + ", " + game.player_names[winner] + " won.");
-            }
-            
-            // if it was your opponent's turn
-            if (game.turn !== player.number) {
-                game = msg.game;
-                resetBoard();
-            }
-            
-            game = msg.game;
-            updateTable();
-            
-            for (let i = 0; i < msg.messages.length; i++) {
-                receiveMessage(msg.messages[i]);
-            }
-            
-        }, function(xhr, error) {
-            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        });
-    }, update_loop_delay);
 }
 
 /*
