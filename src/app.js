@@ -453,6 +453,10 @@ function joinGame(data, callback) {
     // Load the game object
     let game = getByID("games", data.game_id);
     
+    if (game.player_colors.includes(data.player_color)) {
+        return callback("Another player already has this color")
+    }
+    
     // Check that the game isn't active
     if (game.active) {
         return callback("Unable to join - game has already started");
@@ -536,6 +540,16 @@ function makeMove(data, callback) {
     
     let game = getByID("games", player.game_id);
     
+    // Check that the game has started
+    if (!game.active) {
+        return callback("Cannot make a move before the game begins")
+    }
+    
+    // Check that this player can make a move
+    if (player.number !== game.turn) {
+        return callback("Cannot make a move during another player's turn")
+    }
+    
     // Check that the move is valid
     if (!hex.isValidMove(game.board, data.move)) {
         return callback("Invalid move at position " + data.move);
@@ -543,6 +557,7 @@ function makeMove(data, callback) {
     
     // Apply the move and save the database
     hex.applyMove(game.board, data.move, player.number);
+    hex.nextTurn(game);
     
     // Save changes and return
     db.write();

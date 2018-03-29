@@ -28,7 +28,7 @@ function showPage(n, id) {
 
 function submitNewGame() {
     let username = $("#new-game-username").val();
-    let color = $("input[name=color]:checked").val();
+    let color = $("input[name=color-new]:checked").val();
     let mode = $("input[name=mode]:checked").val();
     
     // TODO get board from user input
@@ -57,9 +57,9 @@ function submitNewGame() {
 }
 
 function submitJoinGame() {
-    let username = $("#new-game-username").val();
-    let color = $("input[name=color]:checked").val();
-    let game_id = $("#new-game-id").val();
+    let username = $("#join-game-username").val();
+    let color = $("input[name=color-join]:checked").val();
+    let game_id = $("#join-game-id").val();
     
     let obj = {
         "player_name": username,
@@ -67,7 +67,7 @@ function submitJoinGame() {
         "game_id": game_id
     };
     
-    post("/new-game", obj, function(data) {
+    post("/join-game", obj, function(data) {
         saveTemp("player", data.player);
         saveTemp("game", data.game);
         

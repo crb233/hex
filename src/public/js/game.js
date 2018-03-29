@@ -65,7 +65,8 @@ function makePlayersList() {
 Generates and displays the board
 */
 function makeBoard() {
-    $("#content").html(createBoard(game.board, game.player_colors));
+    let board = createBoard(game.board, game.player_colors, "clickTile");
+    $("#content").html(board);
 }
 
 /*
@@ -78,10 +79,7 @@ function canMakeMove() {
 /*
 Called when the user clicks on a hex tile
 */
-function clickTile() {
-    let r = parseInt($(this).attr("data-r"));
-    let c = parseInt($(this).attr("data-c"));
-    
+function clickTile(elem, r, c) {
     // If the selection was valid
     if (canMakeMove() && isValidMove(game.board, [r, c])) {
         // Reset the previously seleccted piece
@@ -89,10 +87,10 @@ function clickTile() {
         
         // Show the current piece
         let img = getHexImg(NORMAL_PIECE + player.number, game.player_colors);
-        $(this).attr("src", img);
+        $(elem).attr("src", img);
         
         move = [r, c];
-        selected = this;
+        selected = elem;
     }
 }
 
@@ -118,6 +116,14 @@ function submitMove() {
         return false;
     }
     
+    if (!isValidMove(game.board, move)) {
+        gameError.show("Invalid move");
+        return false;
+    }
+    
+    applyMove(game.board, move, player.number);
+    nextTurn(game);
+    
     let obj = {
         "player_id": player.id,
         "move": move
@@ -140,7 +146,7 @@ function submitMove() {
 
 /*
 Starts an infinite loop of requesting updates from the server in intervals
-determined by the constant UPDATE_LOOP_TIME
+determined by the constant UPDATE_LOOP_DELAY
 */
 function startUpdateLoop() {
     loop = setInterval(function(){
@@ -150,8 +156,9 @@ function startUpdateLoop() {
         };
         
         post("/get-updates", data, function(obj) {
-            if (game.turn !== player.number) {
+            if (!game.active || game.turn !== player.number) {
                 game = obj.game;
+                makeBoard();
             }
             
             for (let msg of obj.messages) {
@@ -170,12 +177,11 @@ function startUpdateLoop() {
 }
 
 /*
-Receives message objects from the server and acts according to their content
+Receives a message object from the server and acts according to their content
 */
 function receiveMessage(msg) {
     switch (msg.type) {
     case "join":
-        makeBoard();
         makePlayersList();
         break;
         
@@ -183,32 +189,7 @@ function receiveMessage(msg) {
         // TODO
         break;
         
-    case "request_draw":
-        // TODO
-        break;
-        
-    case "accept_draw":
-        // TODO
-        break;
-        
-    case "reject_draw":
-        // TODO
-        break;
-        
-    case "pause":
-        // TODO
-        break;
-        
-    case "resume":
-        // TODO
-        break;
-        
-    case "expired":
-        // TODO
-        break;
-        
     default:
-        // TODO
         break;
     }
 }
@@ -223,7 +204,6 @@ $(document).ready(function() {
     $(window).resize(resizeBoard);
     
     // Set tile and button functionality
-    $(".hex").not(".hidden").click(clickTile);
     $("#cancel-move").click(cancelMove);
     $("#submit-move").click(submitMove);
     

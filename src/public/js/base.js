@@ -90,9 +90,15 @@ function setHexScale(scale, selector) {
 /*
 Creates and returns an HTML element representing the given hex board
 */
-function createBoard(board, cmap) {
-    let res = [];
+function createBoard(board, cmap, func) {
+    let attr;
+    if (typeof func !== "undefined") {
+        attr = (r, c) => " onclick='" + func + "(this," + r + "," + c + ")'";
+    } else {
+        attr = (r, c) => "";
+    }
     
+    let res = [];
     res.push("<div class='board'>");
     for (let r = 0; r < board.length; r++) {
         
@@ -104,8 +110,8 @@ function createBoard(board, cmap) {
         }
         
         for (let c = 0; c < row.length; c++) {
-            res.push("<img class='hex' data-r='" + r + "' data-c='" + c
-                + "' src='" + getHexImg(row[c], cmap) + "'/>");
+            res.push("<img class='hex'" + attr(r, c)
+                + " src='" + getHexImg(row[c], cmap) + "'/>");
         }
         
         res.push("</div>");

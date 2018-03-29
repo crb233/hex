@@ -86,6 +86,13 @@ function applyMove(board, move, player) {
 }
 
 /*
+
+*/
+function nextTurn(game) {
+    game.turn = game.turn % game.players + 1;
+}
+
+/*
 Returns the player number of board's winner or 0 if there's no winner yet
 */
 function getWinner(board) {
@@ -123,5 +130,6 @@ module.exports = {
     isValidPos: isValidPos,
     isValidMove: isValidMove,
     applyMove: applyMove,
+    nextTurn: nextTurn,
     getWinner: getWinner
 };
