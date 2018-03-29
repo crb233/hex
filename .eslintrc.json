@@ -8,17 +8,19 @@
         "ecmaVersion": 6
     },
     "rules": {
-        "semi": ["error", "always"],
+        "func-style": ["error", "declaration"],
         "linebreak-style": ["error", "unix"],
+        "semi": ["error", "always"],
         "no-var": ["error"],
         
         "no-trailing-spaces": ["warn", { "skipBlankLines": true }],
         "no-unused-expressions": ["warn"],
         "quotes": ["warn", "double"],
-        "indent": ["warn", 4],
-        "key-spacing": ["warn"],
-        "no-unused-vars": ["warn"],
         "yoda": ["warn", "never"],
+        "indent": ["warn", 4],
+        "no-unused-vars": ["warn"],
+        "key-spacing": ["warn"],
+        "brace-style": ["warn"],
         
         "no-console": ["off"]
     },

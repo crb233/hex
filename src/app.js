@@ -302,6 +302,18 @@ function trimPlayerObject(obj) {
     return copy;
 }
 
+function copyBoard(board) {
+    let newboard = [];
+    for (let row of board) {
+        let newrow = [];
+        for (let elem of row) {
+            newrow.push(elem);
+        }
+        newboard.push(newrow);
+    }
+    return newboard;
+}
+
 /*
 Deletes all data associated with a particular game
 */
@@ -397,7 +409,7 @@ function newGame(data, callback) {
         "player_colors": [data.player_color],
         "board_id": board_obj.id,
         "board_name": board_obj.name,
-        "board": board_obj.board
+        "board": copyBoard(board_obj.board)
     };
     
     // Store the player and game objects
@@ -530,7 +542,7 @@ function makeMove(data, callback) {
     }
     
     // Apply the move and save the database
-    hex.applyMove(game.board, data.move);
+    hex.applyMove(game.board, data.move, player.number);
     
     // Save changes and return
     db.write();

@@ -6,10 +6,10 @@ game, fail and display the error message.
 */
 
 // The delay between get-update requests in milliseconds
-const update_loop_delay = 1000;
+const UPDATE_LOOP_DELAY = 1000;
 
 // The minimum scale of the game board
-const min_scale = 10;
+const MIN_SCALE = 10;
 
 // Local player and game objects
 let player = loadTemp("player");
@@ -19,8 +19,11 @@ let game = loadTemp("game");
 let move = null;
 let selected = null;
 
-// Updates loop
+// The update loop
 let loop;
+
+// Error message object
+let gameError;
 
 /*
 Resizes the board to fit the window
@@ -34,9 +37,9 @@ function resizeBoard() {
     let cols = game.board.reduce((m, x, i) => Math.max(m, x.length + i % 2 / 2), 1);
     
     // TODO FIXME
-    let hr = (h - 50) / rows / (hex_h + hex_margin_h);
-    let wr = (w - 100) / cols / (hex_w + hex_margin_w);
-    let scale = Math.max(Math.min(hr, wr), min_scale);
+    let hr = (h - 50) / rows / (HEX_TILE_H + HEX_MARGIN_H);
+    let wr = (w - 100) / cols / (HEX_TILE_W + HEX_MARGIN_W);
+    let scale = Math.max(Math.min(hr, wr), MIN_SCALE);
     
     setHexScale(scale);
 }
@@ -66,6 +69,13 @@ function makeBoard() {
 }
 
 /*
+Returns whether the current player cn make a move
+*/
+function canMakeMove() {
+    return game.active && game.turn === player.number;
+}
+
+/*
 Called when the user clicks on a hex tile
 */
 function clickTile() {
@@ -73,7 +83,7 @@ function clickTile() {
     let c = parseInt($(this).attr("data-c"));
     
     // If the selection was valid
-    if (game.turn === player.number && isValidMove(game.board, [r, c])) {
+    if (canMakeMove() && isValidMove(game.board, [r, c])) {
         // Reset the previously seleccted piece
         cancelMove();
         
@@ -103,7 +113,10 @@ function cancelMove() {
 Submit the currently selected move. Called when the user clicks "Submit"
 */
 function submitMove() {
-    $("#make-move-error").hide();
+    if (!canMakeMove()) {
+        gameError.show("You can't make a move yet");
+        return false;
+    }
     
     let obj = {
         "player_id": player.id,
@@ -113,13 +126,12 @@ function submitMove() {
     post("/make-move", obj, function(data) {
         game = data.game;
         makeBoard();
-        console.log("success!");
         
     }, function(xhr) {
         if (xhr.status === 400) {
-            showError("#make-move-error", xhr.response);
+            gameError.show(xhr.response);
         } else {
-            showError("#make-move-error", "Failed to contact the server");
+            gameError.show("Failed to contact the server");
         }
     });
     
@@ -138,7 +150,9 @@ function startUpdateLoop() {
         };
         
         post("/get-updates", data, function(obj) {
-            game = obj.game;
+            if (game.turn !== player.number) {
+                game = obj.game;
+            }
             
             for (let msg of obj.messages) {
                 receiveMessage(msg);
@@ -146,13 +160,13 @@ function startUpdateLoop() {
             
         }, function(xhr) {
             if (xhr.status === 400) {
-                showError("#make-move-error", xhr.response);
+                gameError.show(xhr.response, 2000);
             } else {
-                showError("#make-move-error", "Failed to contact the server");
+                gameError.show("Failed to contact the server", 2000);
             }
         });
         
-    }, update_loop_delay);
+    }, UPDATE_LOOP_DELAY);
 }
 
 /*
@@ -213,8 +227,8 @@ $(document).ready(function() {
     $("#cancel-move").click(cancelMove);
     $("#submit-move").click(submitMove);
     
-    // Hide error message divs
-    $("div.error").hide();
+    // Initialize error message divs
+    gameError = new ErrorMessage("#game-error");
     
     startUpdateLoop();
 });

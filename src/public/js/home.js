@@ -1,14 +1,9 @@
 
-// import {
-//     saveTemp,
-//     setHexScale,
-//     showError,
-//     post
-// } from "base";
-
-
-
 const pages = [1, 2];
+
+// Error message objects
+let newGameError;
+let joinGameError;
 
 function scroll(id, then) {
     $("#content").animate({
@@ -52,9 +47,9 @@ function submitNewGame() {
         
     }, function(xhr) {
         if (xhr.status === 400) {
-            showError("#new-game-error", xhr.response);
+            newGameError.show(xhr.response);
         } else {
-            showError("#new-game-error", "Failed to contact the server");
+            newGameError.show("Failed to contact the server");
         }
     });
     
@@ -80,9 +75,9 @@ function submitJoinGame() {
         
     }, function(xhr) {
         if (xhr.status === 400) {
-            showError("#new-game-error", xhr.response);
+            joinGameError.show(xhr.response);
         } else {
-            showError("#new-game-error", "Failed to contact the server");
+            joinGameError.show("Failed to contact the server");
         }
     });
     
@@ -115,6 +110,7 @@ $(document).ready(function() {
     $("#new-game-submit").click(submitNewGame);
     $("#join-game-submit").click(submitJoinGame);
     
-    // Hide error message divs
-    $("div.error").hide();
+    // Create error message objects
+    newGameError = new ErrorMessage("#new-game-error");
+    joinGameError = new ErrorMessage("#join-game-error");
 });

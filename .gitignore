@@ -8,3 +8,4 @@ coverage/
 
 # lowdb database file
 db.json
+db.json.bak

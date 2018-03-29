@@ -39,15 +39,14 @@ function deleteTemp(key) {
 // Hex Tile Functions //
 //====================//
 
-// Size of hex tile margin relative to width of tile
-const margin = 1 / 5;
+// Size of hex tile margin relative to edge length of tile
+const MARGIN = 1 / 5;
 
 // Hex tile scaling factors
-const root3 = Math.sqrt(3);
-const hex_w = root3;
-const hex_h = 2;
-const hex_margin_w = margin;
-const hex_margin_h = (root3 * margin - 1) / 2;
+const HEX_TILE_W = Math.sqrt(3);
+const HEX_TILE_H = 2;
+const HEX_MARGIN_W = MARGIN;
+const HEX_MARGIN_H = (Math.sqrt(3) * MARGIN - 1) / 2;
 
 function getHexImg(piece, cmap) {
     let type = getPieceType(piece);
@@ -82,10 +81,10 @@ function setCss(name, val, selector) {
 }
 
 function setHexScale(scale, selector) {
-    setCss("--hex-w", (hex_w * scale) + "px", selector);
-    setCss("--hex-h", (hex_h * scale) + "px", selector);
-    setCss("--hex-margin-w", (hex_margin_w * scale) + "px", selector);
-    setCss("--hex-margin-h", (hex_margin_h * scale) + "px", selector);
+    setCss("--hex-w", (HEX_TILE_W * scale) + "px", selector);
+    setCss("--hex-h", (HEX_TILE_H * scale) + "px", selector);
+    setCss("--hex-margin-w", (HEX_MARGIN_W * scale) + "px", selector);
+    setCss("--hex-margin-h", (HEX_MARGIN_H * scale) + "px", selector);
 }
 
 /*
@@ -120,17 +119,9 @@ function createBoard(board, cmap) {
 
 
 
-//===========================//
-// Game Management Functions //
-//===========================//
-
-/*
-Displays an error message in the element with the given ID
-*/
-function showError(id, error) {
-    $(id).html("Error: " + error);
-    $(id).show();
-}
+//===============//
+// Miscellaneous //
+//===============//
 
 /*
 Sends a post request containing JSON data to the given endpoint. Calls one of
@@ -148,6 +139,69 @@ function post(endpoint, data, success, error) {
     });
 }
 
+const HIDE_OPTS = {
+    "opacity": "0"
+};
+
+const SHOW_OPTS = {
+    "opacity": "1"
+};
+
+class ErrorMessage {
+    
+    constructor(sel) {
+        this.obj = $(sel);
+        this.visible = false;
+        this.timeout = null;
+        
+        this.obj.css(HIDE_OPTS);
+    }
+    
+    /*
+    Set the timer for hiding the error message
+    */
+    setTime(time) {
+        if (typeof time === "undefined") time = 2000;
+        
+        let self = this;
+        self.timeout = setTimeout(function() {
+            self.visible = false;
+            self.timeout = null;
+            self.obj.animate(HIDE_OPTS, 500, "swing");
+        }, time);
+    }
+    
+    /*
+    Displays an error message in the elements that match the selector
+    */
+    show(error, time) {
+        let self = this;
+        self.obj.html("Error: " + error);
+        
+        if (!self.visible) {
+            self.visible = true;
+            self.obj.animate(SHOW_OPTS, 200, "swing", function() {
+                self.setTime(time);
+            });
+            
+        } else {
+            clearTimeout(self.timeout);
+            self.setTime(time);
+        }
+    }
+    
+    /*
+    Hides the error message being displayed in the elements that match the selector
+    */
+    hide() {
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+            this.timeout = null;
+            this.obj.animate(HIDE_OPTS, 500, "swing");
+        }
+    }
+}
+
 
 
 
@@ -160,15 +214,15 @@ module.exports = {
     saveTemp: saveTemp,
     loadTemp: loadTemp,
     deleteTemp: deleteTemp,
-    margin: margin,
-    hex_w: hex_w,
-    hex_h: hex_h,
-    hex_margin_w: hex_margin_w,
-    hex_margin_h: hex_margin_h,
+    MARGIN: MARGIN,
+    HEX_TILE_W: HEX_TILE_W,
+    HEX_TILE_H: HEX_TILE_H,
+    HEX_MARGIN_W: HEX_MARGIN_W,
+    HEX_MARGIN_H: HEX_MARGIN_H,
     getHexImg: getHexImg,
     setCss: setCss,
     setHexScale: setHexScale,
     createBoard: createBoard,
-    showError: showError,
-    post: post
+    post: post,
+    ErrorMessage: ErrorMessage
 };
