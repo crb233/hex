@@ -4,8 +4,8 @@ const path = require("path").join;
 
 const COLORS = {
     "none":   ["#bbbbbb", "#dddddd", "#eeeeee"],
-    "red":    ["#cc2222", "#ee5555", "#ff8888"],
-    "yellow": ["#bbbb22", "#dddd44", "#eeee66"],
+    "red":    ["#cc3333", "#ff5555", "#ff9988"],
+    "yellow": ["#ccbb22", "#dddd44", "#eeee66"],
     "green":  ["#33aa33", "#55cc55", "#77ee77"],
     "cyan":   ["#00aaaa", "#00cccc", "#22eeee"],
     "blue":   ["#2244aa", "#4466dd", "#6688ff"],
