@@ -25,6 +25,11 @@ let loop;
 // Error message object
 let gameError;
 
+function setGame(gameObject) {
+    game = gameObject;
+    saveTemp("game", gameObject);
+}
+
 /*
 Resizes the board to fit the window
 */
@@ -52,20 +57,26 @@ function makePlayersList() {
         console.error("Error: Player names and colors don't match up");
     }
     
-    let text = "";
+    let res = [];
     let len = Math.min(game.player_names.length, game.player_colors.length);
     for (let i = 0; i < len; i++) {
-        // TODO
+        res.push("<div class='player-name");
+        if (i + 1 == game.turn) {
+            res.push(" selected");
+        }
+        res.push("'>");
+        res.push(game.player_names[i]);
+        res.push("</div>");
     }
     
-    $("#players-list").html(text);
+    $("#players-list").html(res.join(""));
 }
 
 /*
 Generates and displays the board
 */
 function makeBoard() {
-    let board = createBoard(game.board, game.player_colors, "clickTile");
+    let board = createBoard(game.board, game.player_colors, "clickTile", "hoverTile");
     $("#content").html(board);
 }
 
@@ -74,6 +85,21 @@ Returns whether the current player cn make a move
 */
 function canMakeMove() {
     return game.active && game.turn === player.number;
+}
+
+/*
+Called when the user hovers over a hex tile
+*/
+function hoverTile(elem, r, c) {
+    // If the selection was valid
+    // if (canMakeMove() && isValidMove(game.board, [r, c])) {
+    //     // Show the current piece
+    //     let img = getHexImg(NORMAL_PIECE + player.number, game.player_colors);
+    //     $(elem).attr("src", img);
+    //
+    //     move = [r, c];
+    //     selected = elem;
+    // }
 }
 
 /*
@@ -86,7 +112,7 @@ function clickTile(elem, r, c) {
         cancelMove();
         
         // Show the current piece
-        let img = getHexImg(NORMAL_PIECE + player.number, game.player_colors);
+        let img = getHexImg(SELECT_PIECE + player.number, game.player_colors);
         $(elem).attr("src", img);
         
         move = [r, c];
@@ -116,6 +142,10 @@ function submitMove() {
         return false;
     }
     
+    if (move === null) {
+        gameError.show("You must select a tile to make your move");
+    }
+    
     if (!isValidMove(game.board, move)) {
         gameError.show("Invalid move");
         return false;
@@ -130,8 +160,10 @@ function submitMove() {
     };
     
     post("/make-move", obj, function(data) {
-        game = data.game;
+        setGame(data.game);
         makeBoard();
+        makePlayersList();
+        move = null;
         
     }, function(xhr) {
         if (xhr.status === 400) {
@@ -157,8 +189,9 @@ function startUpdateLoop() {
         
         post("/get-updates", data, function(obj) {
             if (!game.active || game.turn !== player.number) {
-                game = obj.game;
+                setGame(obj.game);
                 makeBoard();
+                makePlayersList();
             }
             
             for (let msg of obj.messages) {
@@ -182,7 +215,7 @@ Receives a message object from the server and acts according to their content
 function receiveMessage(msg) {
     switch (msg.type) {
     case "join":
-        makePlayersList();
+        // TODO
         break;
         
     case "forfeit":

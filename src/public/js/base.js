@@ -5,6 +5,10 @@
 
 // Local (browser) data
 
+function hasLocal(key) {
+    return key in localStorage;
+}
+
 function saveLocal(key, obj) {
     localStorage.setItem(key, JSON.stringify(obj));
 }
@@ -18,6 +22,10 @@ function deleteLocal(key) {
 }
 
 // Temporary (session) data
+
+function hasTemp(key) {
+    return key in sessionStorage;
+}
 
 function saveTemp(key, obj) {
     sessionStorage.setItem(key, JSON.stringify(obj));
@@ -52,20 +60,31 @@ function getHexImg(piece, cmap) {
     let type = getPieceType(piece);
     let player = getPiecePlayer(piece);
     
+    if (player - 1 >= cmap.length) {
+        return "img/hex-none-base.svg";
+    }
+    
+    let color;
+    if (player === 0) {
+        color = "none";
+    } else {
+        color = cmap[player - 1];
+    }
+    
     if (type === HIDDEN_PIECE) {
         return "img/hex-hidden.svg";
         
-    } else if (player === 0) {
-        return "img/hex-none.svg";
-        
-    } else if (player - 1 >= cmap.length) {
-        return "img/hex-unassigned.svg";
-        
     } else if (type === NORMAL_PIECE) {
-        return "img/hex-" + cmap[player - 1] + ".svg";
+        return "img/hex-" + color + ".svg";
+        
+    } else if (type === BASE_PIECE) {
+        return "img/hex-" + color + "-base.svg";
+        
+    } else if (type === SELECT_PIECE) {
+        return "img/hex-" + color + "-select.svg";
         
     } else {
-        return "img/hex-" + cmap[player - 1] + "-base.svg";
+        return "img/hex-hidden.svg";
     }
 }
 
@@ -90,13 +109,9 @@ function setHexScale(scale, selector) {
 /*
 Creates and returns an HTML element representing the given hex board
 */
-function createBoard(board, cmap, func) {
-    let attr;
-    if (typeof func !== "undefined") {
-        attr = (r, c) => " onclick='" + func + "(this," + r + "," + c + ")'";
-    } else {
-        attr = (r, c) => "";
-    }
+function createBoard(board, cmap, click, hover) {
+    let doclick = typeof click !== "undefined";
+    let dohover = typeof hover !== "undefined";
     
     let res = [];
     res.push("<div class='board'>");
@@ -110,8 +125,24 @@ function createBoard(board, cmap, func) {
         }
         
         for (let c = 0; c < row.length; c++) {
-            res.push("<img class='hex'" + attr(r, c)
-                + " src='" + getHexImg(row[c], cmap) + "'/>");
+            res.push("<img class='hex'");
+            if (doclick) {
+                res.push(" onclick='");
+                res.push(click);
+                res.push("(this,");
+                res.push([r, c]);
+                res.push(")'");
+            }
+            if (dohover) {
+                res.push(" onmouseover='");
+                res.push(hover);
+                res.push("(this,");
+                res.push([r, c]);
+                res.push(")'");
+            }
+            res.push(" src='");
+            res.push(getHexImg(row[c], cmap));
+            res.push("'/>");
         }
         
         res.push("</div>");

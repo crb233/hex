@@ -1,9 +1,11 @@
 
-const NO_PLAYER = 0;
-const MAX_PLAYERS = 9;
+const NO_PLAYER    = 0;
+const MAX_PLAYERS  = 9;
+
 const HIDDEN_PIECE = 0;
 const NORMAL_PIECE = 10;
 const BASE_PIECE   = 20;
+const SELECT_PIECE = 30;
 
 /*
 Rows go horizontally increasing rightward
