@@ -109,15 +109,15 @@ function setHexScale(scale, selector) {
 /*
 Creates and returns an HTML element representing the given hex board
 */
-function createBoard(board, cmap, click, hover) {
+function boardHtml(board, cmap, click, hover) {
     let doclick = typeof click !== "undefined";
     let dohover = typeof hover !== "undefined";
     
     let res = [];
     res.push("<div class='board'>");
-    for (let r = 0; r < board.length; r++) {
+    for (let r = 0; r < board.pieces.length; r++) {
         
-        let row = board[r];
+        let row = board.pieces[r];
         if (r % 2 === 0) {
             res.push("<div class='hex-row'>");
         } else {
@@ -259,7 +259,7 @@ module.exports = {
     getHexImg: getHexImg,
     setCss: setCss,
     setHexScale: setHexScale,
-    createBoard: createBoard,
+    boardHtml: boardHtml,
     post: post,
     ErrorMessage: ErrorMessage
 };

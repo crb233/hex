@@ -22,9 +22,11 @@ patterns will be specified with ellipsis `...`.
 ```javascript
 {
     "id": ID,
-    "board_name": STRING,
+    "name": STRING,
     "players": INT,
-    "board": [
+    "base_counts": [INT, INT...],
+    "bases": [[INT, INT], [INT, INT]...],
+    "pieces": [
         [INT, INT...],
         [INT, INT...],
         ...
@@ -51,17 +53,10 @@ patterns will be specified with ellipsis `...`.
     "active": BOOL,
     "public": BOOL,
     "turn": INT,
-    "players": INT,
     "player_ids": [ID, ID...],
     "player_names": [STRING, STRING...],
     "player_colors": [COLOR, COLOR...],
-    "board_id": ID,
-    "board_name": STRING,
-    "board": [
-        [INT, INT...],
-        [INT, INT...],
-        ...
-    ]
+    "board": BOARD
 }
 ```
 

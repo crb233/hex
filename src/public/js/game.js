@@ -3,6 +3,9 @@
 TODO: if player or game aren't found in temporary storage, check local storage
 for the most recent player and game. If local storage doesn't have a recent
 game, fail and display the error message.
+
+TODO: when a piece is selected, allow the use of backspace and enter keys to
+cancel or submit the move.
 */
 
 // The delay between get-update requests in milliseconds
@@ -38,8 +41,9 @@ function resizeBoard() {
     let w = content.width();
     let h = content.height();
     
-    let rows = game.board.length;
-    let cols = game.board.reduce((m, x, i) => Math.max(m, x.length + i % 2 / 2), 1);
+    let pieces = game.board.pieces;
+    let rows = pieces.length;
+    let cols = pieces.reduce((m, x, i) => Math.max(m, x.length + i % 2 / 2), 1);
     
     // TODO FIXME
     let hr = (h - 50) / rows / (HEX_TILE_H + HEX_MARGIN_H);
@@ -52,7 +56,7 @@ function resizeBoard() {
 /*
 Generates the players list on the sidebar
 */
-function makePlayersList() {
+function showPlayers() {
     if (game.player_names.length != game.player_colors.length) {
         console.error("Error: Player names and colors don't match up");
     }
@@ -75,9 +79,9 @@ function makePlayersList() {
 /*
 Generates and displays the board
 */
-function makeBoard() {
-    let board = createBoard(game.board, game.player_colors, "clickTile", "hoverTile");
-    $("#content").html(board);
+function showBoard() {
+    let pieces = boardHtml(game.board, game.player_colors, "clickTile", "hoverTile");
+    $("#content").html(pieces);
 }
 
 /*
@@ -88,18 +92,22 @@ function canMakeMove() {
 }
 
 /*
+
+*/
+function checkForWinner() {
+    let winner = getWinner(game.board);
+    if (winner === player.number) {
+        alert("You win! :)");
+    } else if (winner !== NO_PLAYER) {
+        alert("You lose! :(");
+    }
+}
+
+/*
 Called when the user hovers over a hex tile
 */
 function hoverTile(elem, r, c) {
-    // If the selection was valid
-    // if (canMakeMove() && isValidMove(game.board, [r, c])) {
-    //     // Show the current piece
-    //     let img = getHexImg(NORMAL_PIECE + player.number, game.player_colors);
-    //     $(elem).attr("src", img);
-    //
-    //     move = [r, c];
-    //     selected = elem;
-    // }
+    
 }
 
 /*
@@ -144,6 +152,7 @@ function submitMove() {
     
     if (move === null) {
         gameError.show("You must select a tile to make your move");
+        return false;
     }
     
     if (!isValidMove(game.board, move)) {
@@ -161,9 +170,13 @@ function submitMove() {
     
     post("/make-move", obj, function(data) {
         setGame(data.game);
-        makeBoard();
-        makePlayersList();
+        showBoard();
+        showPlayers();
+        
         move = null;
+        selected = null;
+        
+        checkForWinner();
         
     }, function(xhr) {
         if (xhr.status === 400) {
@@ -190,8 +203,10 @@ function startUpdateLoop() {
         post("/get-updates", data, function(obj) {
             if (!game.active || game.turn !== player.number) {
                 setGame(obj.game);
-                makeBoard();
-                makePlayersList();
+                showBoard();
+                showPlayers();
+
+                checkForWinner();
             }
             
             for (let msg of obj.messages) {
@@ -229,8 +244,8 @@ function receiveMessage(msg) {
 
 $(document).ready(function() {
     resizeBoard();
-    makeBoard();
-    makePlayersList();
+    showBoard();
+    showPlayers();
     $("#game-id").html("Game ID: " + game.id);
     
     // Set board to auto-resize

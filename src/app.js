@@ -281,8 +281,7 @@ function uniqueID(coll) {
 Trim sensitive data from a board object to be returned to a user
 */
 function trimBoardObject(obj) {
-    let copy = Object.assign({}, obj);
-    return copy;
+    return obj;
 }
 
 /*
@@ -298,19 +297,24 @@ function trimGameObject(obj) {
 Trim sensitive data from a player object to be returned to a user
 */
 function trimPlayerObject(obj) {
-    let copy = Object.assign({}, obj);
-    return copy;
+    return obj;
 }
 
-function copyBoard(board) {
+function copyPieces(pieces) {
     let newboard = [];
-    for (let row of board) {
+    for (let row of pieces) {
         let newrow = [];
         for (let elem of row) {
             newrow.push(elem);
         }
         newboard.push(newrow);
     }
+    return newboard;
+}
+
+function copyBoard(board) {
+    let newboard = Object.assign({}, board);
+    newboard.pieces = copyPieces(board.pieces)
     return newboard;
 }
 
@@ -383,7 +387,7 @@ function newGame(data, callback) {
     }
     
     // Load the game board object
-    let board_obj = getByID("boards", data.board_id);
+    let board = getByID("boards", data.board_id);
     
     // Generate unique player and game IDs
     let player_id = uniqueID("players");
@@ -403,13 +407,10 @@ function newGame(data, callback) {
         "active": false,
         "public": data.public,
         "turn": 1,
-        "players": board_obj.players,
         "player_ids": [player_id],
         "player_names": [data.player_name],
         "player_colors": [data.player_color],
-        "board_id": board_obj.id,
-        "board_name": board_obj.name,
-        "board": copyBoard(board_obj.board)
+        "board": copyBoard(board)
     };
     
     // Store the player and game objects
@@ -468,7 +469,7 @@ function joinGame(data, callback) {
     let player = {
         "id": player_id,
         "name": data.player_name,
-        "number": game.players,
+        "number": game.board.players,
         "game_id": game.id,
         "last_request": 0,
         "new_messages": []
@@ -478,7 +479,7 @@ function joinGame(data, callback) {
     game.player_ids.push(player_id);
     game.player_names.push(data.player_name);
     game.player_colors.push(data.player_color);
-    if (game.player_ids.length === game.players) {
+    if (game.player_ids.length === game.board.players) {
         game.active = true;
     }
     

@@ -46,6 +46,13 @@ function listNeighbors(board, pos) {
 }
 
 /*
+
+*/
+function getPiece(board, pos) {
+    return board.pieces[pos[0]][pos[1]];
+}
+
+/*
 Gets the player number of a piece
 */
 function getPiecePlayer(piece) {
@@ -64,19 +71,19 @@ Determines whether a position exists on a game board
 */
 function isValidPos(board, pos) {
     return pos[0] >= 0
-            && pos[0] < board.length
-            && pos[1] >= 0
-            && pos[1] < board[pos[0]].length;
+        && pos[0] < board.pieces.length
+        && pos[1] >= 0
+        && pos[1] < board.pieces[pos[0]].length;
 }
 
 /*
 Determines whether a move is valid given the current state of the board
 */
 function isValidMove(board, move) {
-    let p = board[move[0]][move[1]];
+    let piece = getPiece(board, move);
     return isValidPos(board, move)
-            && getPieceType(p) === NORMAL_PIECE
-            && getPiecePlayer(p) === NO_PLAYER;
+        && getPiecePlayer(piece) === NO_PLAYER
+        && getPieceType(piece) === NORMAL_PIECE;
 }
 
 /*
@@ -84,33 +91,53 @@ Modifies a board to reflect a move being made by the given player. This method
 assumes that the move has already been checked for validity.
 */
 function applyMove(board, move, player) {
-    board[move[0]][move[1]] = NORMAL_PIECE + player;
+    board.pieces[move[0]][move[1]] = NORMAL_PIECE + player;
 }
 
 /*
 
 */
 function nextTurn(game) {
-    game.turn = game.turn % game.players + 1;
+    game.turn = game.turn % game.board.players + 1;
 }
 
 /*
 Returns the player number of board's winner or 0 if there's no winner yet
 */
 function getWinner(board) {
-    let pieces = {};
-    for (let r = 0; r < board.length; r++) {
-        for (let c = 0; c < board[r].length; c++) {
-            let p = board[r][c];
-            if (p in pieces) {
-                pieces[p].push([r, c]);
-            } else {
-                pieces[p] = [[r, c]];
+    for (let i in board.bases) {
+        let player = parseInt(i) + 1;
+        let base = board.bases[i];
+        let count = board.base_counts[i];
+        
+        let unexplored = [base];
+        let explored = {};
+        
+        while (true) {
+            if (unexplored.length === 0) {
+                break;
             }
+            
+            let pos = unexplored.pop();
+            let piece = getPiece(board, pos);
+            
+            if (!(pos in explored) && getPiecePlayer(piece) === player) {
+                if (getPieceType(piece) === BASE_PIECE) {
+                    count -= 1;
+                    if (count === 0) {
+                        return player;
+                    }
+                }
+                
+                explored[pos] = true;
+                for (let p of listNeighbors(board, pos)) {
+                    unexplored.push(p);
+                }
+            }
+            
+            
         }
     }
-    
-    // TODO
     
     return NO_PLAYER;
 }
@@ -127,6 +154,7 @@ module.exports = {
     NORMAL_PIECE: NORMAL_PIECE,
     BASE_PIECE: BASE_PIECE,
     listNeighbors: listNeighbors,
+    getPiece: getPiece,
     getPiecePlayer: getPiecePlayer,
     getPieceType: getPieceType,
     isValidPos: isValidPos,
