@@ -80,7 +80,7 @@ function showPlayers() {
 Generates and displays the board
 */
 function showBoard() {
-    let pieces = boardHtml(game.board, game.player_colors, "clickTile", "hoverTile");
+    let pieces = boardHtml(game.board, game.player_colors, "clickTile");
     $("#content").html(pieces);
 }
 
@@ -88,18 +88,19 @@ function showBoard() {
 Returns whether the current player cn make a move
 */
 function canMakeMove() {
-    return game.active && game.turn === player.number;
+    return game.started && !game.finished && game.turn === player.number;
 }
 
 /*
 
 */
 function checkForWinner() {
-    let winner = getWinner(game.board);
-    if (winner === player.number) {
-        alert("You win! :)");
-    } else if (winner !== NO_PLAYER) {
-        alert("You lose! :(");
+    if (game.finished) {
+        if (game.winner === player.number) {
+            showModal("Winner!", "Wow! You actually won this time.");
+        } else {
+            showModal("Loser!", "Oops! Looks like you lost another game.");
+        }
     }
 }
 
@@ -172,11 +173,10 @@ function submitMove() {
         setGame(data.game);
         showBoard();
         showPlayers();
+        checkForWinner();
         
         move = null;
         selected = null;
-        
-        checkForWinner();
         
     }, function(xhr) {
         if (xhr.status === 400) {
@@ -201,11 +201,10 @@ function startUpdateLoop() {
         };
         
         post("/get-updates", data, function(obj) {
-            if (!game.active || game.turn !== player.number) {
+            if (!game.started || (!game.finished && game.turn !== player.number)) {
                 setGame(obj.game);
                 showBoard();
                 showPlayers();
-
                 checkForWinner();
             }
             
@@ -242,7 +241,32 @@ function receiveMessage(msg) {
     }
 }
 
+function showModal(header, text) {
+    $("#modal-header").html(header);
+    $("#modal-header").css("display", "block");
+    $("#modal-text").html(text);
+    $("#modal").css("display", "block");
+}
+
+function hideModal() {
+    $("#modal").css("display", "none");
+}
+
+function setupModal() {
+    let modal = $("#modal").get(0);
+    
+    // When the user clicks on <span> (x), close the modal
+    // When the user clicks anywhere outside of the modal, close it
+    $("#modal-close").click(hideModal);
+    $("#modal").click(function(event) {
+        if (event.target === modal) {
+            hideModal();
+        }
+    });
+}
+
 $(document).ready(function() {
+    setupModal();
     resizeBoard();
     showBoard();
     showPlayers();

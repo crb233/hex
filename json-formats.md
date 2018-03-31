@@ -50,20 +50,22 @@ patterns will be specified with ellipsis `...`.
 ```javascript
 {
     "id": ID,
-    "active": BOOL,
     "public": BOOL,
+    "started": BOOL,
+    "finished": BOOL,
+    "winner": INT,
     "turn": INT,
     "player_ids": [ID, ID...],
     "player_names": [STRING, STRING...],
     "player_colors": [COLOR, COLOR...],
-    "board": BOARD
+    "board": BOARD_OBJECT
 }
 ```
 
 ### MESSAGE_OBJECT
 ```javascript
 {
-    "type": "join/forfeit/request_draw/accept_draw/reject_draw/pause/resume",
+    "type": "join/forfeit/win/lose",
     "text": STRING,
 }
 ```

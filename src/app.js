@@ -300,6 +300,9 @@ function trimPlayerObject(obj) {
     return obj;
 }
 
+/*
+
+*/
 function copyPieces(pieces) {
     let newboard = [];
     for (let row of pieces) {
@@ -312,6 +315,9 @@ function copyPieces(pieces) {
     return newboard;
 }
 
+/*
+
+*/
 function copyBoard(board) {
     let newboard = Object.assign({}, board);
     newboard.pieces = copyPieces(board.pieces)
@@ -347,7 +353,7 @@ Returns a list of all public inactive games
 function listGames(data, callback) {
     let games = db.get("games")
         .filter("public")
-        .reject("active")
+        .reject("started")
         .map(trimGameObject)
         .value();
     
@@ -404,8 +410,10 @@ function newGame(data, callback) {
     
     let game = {
         "id": game_id,
-        "active": false,
         "public": data.public,
+        "started": false,
+        "finished": false,
+        "winner": 0,
         "turn": 1,
         "player_ids": [player_id],
         "player_names": [data.player_name],
@@ -458,8 +466,8 @@ function joinGame(data, callback) {
         return callback("Another player already has this color")
     }
     
-    // Check that the game isn't active
-    if (game.active) {
+    // Check that the game isn't started
+    if (game.started) {
         return callback("Unable to join - game has already started");
     }
     
@@ -480,7 +488,7 @@ function joinGame(data, callback) {
     game.player_names.push(data.player_name);
     game.player_colors.push(data.player_color);
     if (game.player_ids.length === game.board.players) {
-        game.active = true;
+        game.started = true;
     }
     
     let msg = {
@@ -542,7 +550,7 @@ function makeMove(data, callback) {
     let game = getByID("games", player.game_id);
     
     // Check that the game has started
-    if (!game.active) {
+    if (!game.started) {
         return callback("Cannot make a move before the game begins")
     }
     
@@ -559,6 +567,11 @@ function makeMove(data, callback) {
     // Apply the move and save the database
     hex.applyMove(game.board, data.move, player.number);
     hex.nextTurn(game);
+    
+    game.winner = hex.getWinner(game.board);
+    if (game.winner !== hex.NO_PLAYER) {
+        game.finished = true;
+    }
     
     // Save changes and return
     db.write();
